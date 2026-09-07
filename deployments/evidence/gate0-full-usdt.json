@@ -18,7 +18,44 @@
     "weightedCollateralUsd": "31999999999986107449",
     "totalBorrowUsd": "7500000000000000000",
     "healthFactor": "4.266666",
-    "healthFactorMantissa": "4266666666664814326"
+    "healthFactorMantissa": "4266666666664814326",
+    "rawFacts": {
+      "schemaVersion": "lujaw.venus-observation/1",
+      "blockNumber": "129711828",
+      "blockHash": "0x6dc217350aa88bfb1eae4a44f2d180c31f5c0a7c1df5ccb25d3e47f92c3e8c3a",
+      "marketCount": 49,
+      "zeroExposureMarketCount": 48,
+      "marketsWithExposure": [
+        {
+          "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+          "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+          "underlyingDecimals": 6,
+          "isListed": true,
+          "collateralFactorMantissa": "750000000000000000",
+          "liquidationThresholdMantissa": "800000000000000000",
+          "vTokenBalance": "398453081753",
+          "exchangeRateMantissa": "200776461931237",
+          "borrowBalance": "15000000",
+          "priceMantissa": "500000000000000000000000000000",
+          "entered": true
+        }
+      ],
+      "unreadableMarkets": [],
+      "enteredMarkets": [
+        "0xb7526572ffe56ab9d7489838bf2e18e3323b441a"
+      ],
+      "vai": {
+        "controller": "0xf70c3c6b749bbab89c081737334e74c9afd4be16",
+        "mintedPrincipal": "0",
+        "repayAmount": "0",
+        "decimals": 18
+      },
+      "accountLiquidity": {
+        "errorCode": "0",
+        "liquidity": "24499999999985987914",
+        "shortfall": "0"
+      }
+    }
   },
   "session": {
     "chainId": 97,
@@ -106,10 +143,24 @@
     "approveExplorer": "https://testnet.bscscan.com/tx/0x06cde75ef55927892bf64a552f76dcb3baea62c539ef6c567160e6dd07e3a0c7",
     "mintHash": "0xd84ea69c77ab4701267263bcac27529b91b6fd3dedb642a24b565f730021f0fe",
     "mintExplorer": "https://testnet.bscscan.com/tx/0xd84ea69c77ab4701267263bcac27529b91b6fd3dedb642a24b565f730021f0fe",
-    "mintStatus": "CONFIRMED",
+    "mintStatus": "CONFIRMED_AND_ATTRIBUTED",
     "mintBlockNumber": "129711921",
     "topLevelTo": "0xcb5cef3c54aa90e9a7ad602a258d3d360cc862b9",
-    "topLevelSelector": "0x09c5eabe"
+    "topLevelSelector": "0x09c5eabe",
+    "envelope": "ALTANA_ORCHESTRATOR",
+    "expectedInnerTarget": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+    "expectedInnerSelector": "0xa0712d68",
+    "attributionMethod": "bounded effective authority + Venus Mint and ERC-20 Transfer receipt events",
+    "verifiedMintEffects": {
+      "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+      "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+      "minter": "0x658d1744c94c743e7f759be8a2943a044cbc440b",
+      "mintAmountRaw": "1000000",
+      "mintTokensRaw": "4980663521",
+      "vTokenBalanceAfterRaw": "403433745274",
+      "mintLogIndex": 4,
+      "transferLogIndex": 3
+    }
   },
   "postState": {
     "blockNumber": "129711927",
@@ -118,7 +169,44 @@
     "totalBorrowUsd": "7500000000000000000",
     "healthFactor": "4.319999",
     "healthFactorMantissa": "4319999999988353384",
-    "improved": true
+    "improved": true,
+    "rawFacts": {
+      "schemaVersion": "lujaw.venus-observation/1",
+      "blockNumber": "129711927",
+      "blockHash": "0x9c909af11b2b7a6c6e2983feade2937633e6af02591feb2a7e2c665cffeda193",
+      "marketCount": 49,
+      "zeroExposureMarketCount": 48,
+      "marketsWithExposure": [
+        {
+          "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+          "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+          "underlyingDecimals": 6,
+          "isListed": true,
+          "collateralFactorMantissa": "750000000000000000",
+          "liquidationThresholdMantissa": "800000000000000000",
+          "vTokenBalance": "403433745274",
+          "exchangeRateMantissa": "200776461931237",
+          "borrowBalance": "15000000",
+          "priceMantissa": "500000000000000000000000000000",
+          "entered": true
+        }
+      ],
+      "unreadableMarkets": [],
+      "enteredMarkets": [
+        "0xb7526572ffe56ab9d7489838bf2e18e3323b441a"
+      ],
+      "vai": {
+        "controller": "0xf70c3c6b749bbab89c081737334e74c9afd4be16",
+        "mintedPrincipal": "0",
+        "repayAmount": "0",
+        "decimals": 18
+      },
+      "accountLiquidity": {
+        "errorCode": "0",
+        "liquidity": "24899999999912529354",
+        "shortfall": "0"
+      }
+    }
   },
   "revocation": {
     "hash": "0x6b5d125f53de5605d8623a7688fcf0d23dea1430a6b9f261ad75de171aae740c",

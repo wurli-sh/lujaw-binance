@@ -26,6 +26,7 @@ import {
   http,
   isHex,
   slice,
+  toFunctionSelector,
 } from "viem";
 import type { Address, Hex, PublicClient } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -49,15 +50,18 @@ import {
   reconstruct,
   serializePermissions,
   sessionKeyIdentity,
+  verifyMintReceiptEffects,
   venusDeploymentFor,
   type AuthorityDiscrepancy,
   type RequestedSessionPermissions,
+  type RawVenusObservation,
   type SessionRecord,
   type SupplyMarketConfig,
   type VenusDeployment,
 } from "../packages/core/src/index.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const ORCHESTRATOR_EXECUTE_SELECTOR = toFunctionSelector("execute(bytes)");
 
 const ERC20_WRITE_ABI = [
   {
@@ -174,6 +178,42 @@ function writeJson(path: string, value: unknown): void {
   console.log(`wrote ${path}`);
 }
 
+/**
+ * Preserve every raw fact needed to recompute health while keeping the Gate 0
+ * record compact: fully record active and unreadable markets, and count the
+ * markets proven to have zero balances. The pinned block/account make the
+ * complete universe independently replayable.
+ */
+function observationEvidence(observation: RawVenusObservation) {
+  const marketsWithExposure = observation.markets.filter(
+    (market) =>
+      (market.vTokenBalance !== null && BigInt(market.vTokenBalance) > 0n) ||
+      (market.borrowBalance !== null && BigInt(market.borrowBalance) > 0n),
+  );
+  const unpricedSources = new Set(
+    reconstruct(observation).unpriced.map((entry) => entry.vToken.toLowerCase()),
+  );
+  const unreadable = observation.markets.filter((market) =>
+    unpricedSources.has(market.vToken.toLowerCase()),
+  );
+  const zeroExposureMarketCount = observation.markets.filter(
+    (market) => market.vTokenBalance === "0" && market.borrowBalance === "0",
+  ).length;
+
+  return {
+    schemaVersion: observation.schemaVersion,
+    blockNumber: observation.blockNumber,
+    blockHash: observation.blockHash,
+    marketCount: observation.markets.length,
+    zeroExposureMarketCount,
+    marketsWithExposure,
+    unreadableMarkets: unreadable,
+    enteredMarkets: observation.enteredMarkets,
+    vai: observation.vai,
+    accountLiquidity: observation.accountLiquidity,
+  };
+}
+
 async function verifyMarketLive(
   client: PublicClient,
   deployment: VenusDeployment,
@@ -238,6 +278,7 @@ async function runObserveOnly(client: PublicClient, market: Gate0Market): Promis
       unpricedCount: health.unpriced.length,
       protocolLiquidity: observation.accountLiquidity.liquidity,
       protocolShortfall: observation.accountLiquidity.shortfall,
+      rawFacts: observationEvidence(observation),
     },
     marketVerification: {
       vToken: market.config.vToken,
@@ -261,7 +302,7 @@ async function runObserveOnly(client: PublicClient, market: Gate0Market): Promis
   writeJson(join(ROOT, "deployments", "evidence", `gate0-observe-${market.symbol.toLowerCase()}.json`), evidence);
   // Primary locked market is USDT. Failover observes write evidence only.
   if (market.symbol === "USDT" || process.env.GATE0_FREEZE === "1") {
-    freezeDeploymentProfile(market, marketLive.implementation, observation.blockNumber);
+    freezeDeploymentProfile(market, marketLive.implementation, observation);
   }
 }
 
@@ -272,11 +313,23 @@ function checksum(address: string): Address {
 function freezeDeploymentProfile(
   market: Gate0Market,
   implementation: Address,
-  verificationBlock: string,
+  observation: RawVenusObservation,
 ): void {
   const deployment = deploymentForMarket(market);
   const altana = deploymentFor(97);
   const usdc = VENUS_SUPPLY_MARKETS_BSC_TESTNET[1]!;
+  const selectedMarket = observation.markets.find(
+    (entry) => entry.vToken.toLowerCase() === market.config.vToken.toLowerCase(),
+  );
+  if (
+    selectedMarket === undefined ||
+    selectedMarket.liquidationThresholdMantissa === null ||
+    selectedMarket.priceMantissa === null
+  ) {
+    throw new Error(
+      `${market.symbol}: cannot freeze profile without a verified liquidation threshold and oracle price`,
+    );
+  }
   const profile = {
     version: "lujaw.deployment/1",
     environment: "bsc-testnet",
@@ -297,6 +350,9 @@ function freezeDeploymentProfile(
         vTokenImplementation: checksum(implementation),
         underlying: checksum(market.config.underlying),
         underlyingDecimals: market.config.underlyingDecimals,
+        liquidationThresholdMantissa: selectedMarket.liquidationThresholdMantissa,
+        liquidationThresholdVerifiedAtBlock: observation.blockNumber,
+        oraclePriceMantissaAtVerification: selectedMarket.priceMantissa,
         supplyTarget: checksum(market.config.vToken),
         supplySelector: MINT_SELECTOR,
         supplySignature: MINT_SIGNATURE,
@@ -328,16 +384,24 @@ function freezeDeploymentProfile(
       effectiveAuthority: {
         readFrom: "wallet EIP-7702 address via canExecutePackedInfos + spendInfos + getKeys",
         criticalCodes: [
+          "UNREQUESTED_CALL_RULE",
           "WILDCARD_TARGET",
+          "WILDCARD_SELECTOR",
           "SUPER_ADMIN_KEY",
           "KEY_NOT_REGISTERED",
+          "UNREQUESTED_SPEND_LIMIT",
           "SPEND_LIMIT_ENLARGED",
           "WALLET_WIDE_RULE",
+          "EXPIRY_MISMATCH",
+        ],
+        nonBlockingExceptions: [
+          "verified Altana Orchestrator wildcard-selector rule",
+          "constraints narrower than requested, including an earlier expiry",
         ],
       },
     },
     verification: {
-      blockNumber: verificationBlock,
+      blockNumber: observation.blockNumber,
       provenance: [
         {
           source: "live BSC testnet RPC observe + mandate-seeded addresses re-verified",
@@ -505,20 +569,31 @@ async function runFull(client: PublicClient, market: Gate0Market): Promise<void>
     throw new Error(`mint transaction failed: ${submittedHash}`);
   }
 
-  // Best-effort destination/selector check via tx input when available.
+  // Strictly attribute the successful receipt to the expected direct or Altana envelope.
   const tx = await client.getTransaction({ hash: submittedHash });
   const txSelector = tx.input.length >= 10 ? slice(tx.input, 0, 4) : undefined;
-  if (tx.to !== null && tx.to.toLowerCase() !== market.config.vToken.toLowerCase()) {
-    // Altana may wrap through the orchestrator; record but do not auto-fail wrapping.
-    console.warn(
-      `[receipt] tx.to=${tx.to} differs from vToken=${market.config.vToken} (may be orchestrator wrap)`,
-    );
+  if (tx.to === null || txSelector === undefined) {
+    throw new Error("mint receipt has no attributable transaction target or selector");
   }
-  if (txSelector !== undefined && txSelector.toLowerCase() !== MINT_SELECTOR.toLowerCase()) {
-    console.warn(
-      `[receipt] top-level selector=${txSelector} differs from mint=${MINT_SELECTOR} (may be orchestrator wrap)`,
-    );
+  const topLevelTo = tx.to.toLowerCase();
+  const directCall = topLevelTo === market.config.vToken.toLowerCase();
+  const wrappedCall = topLevelTo === ALTANA_BSC_TESTNET.orchestrator.toLowerCase();
+  if (directCall && txSelector.toLowerCase() !== MINT_SELECTOR.toLowerCase()) {
+    throw new Error(`direct Venus call used unexpected selector ${txSelector}`);
   }
+  if (wrappedCall && txSelector.toLowerCase() !== ORCHESTRATOR_EXECUTE_SELECTOR.toLowerCase()) {
+    throw new Error(`Altana wrapper used unexpected selector ${txSelector}`);
+  }
+  if (!directCall && !wrappedCall) {
+    throw new Error(`mint transaction targeted unexpected contract ${tx.to}`);
+  }
+
+  const mintEffects = verifyMintReceiptEffects(receipt.logs, {
+    vToken: market.config.vToken,
+    underlying: market.config.underlying,
+    minter: account,
+    amountRaw: topUpRaw,
+  });
   console.log(`[receipt] ok block=${receipt.blockNumber} ${explorerTx(submittedHash)}`);
 
   // ---- post-state ----
@@ -602,6 +677,7 @@ async function runFull(client: PublicClient, market: Gate0Market): Promise<void>
       totalBorrowUsd: preHealth.totalBorrowUsd.toString(10),
       healthFactor: formatMantissa(preHf),
       healthFactorMantissa: preHf.toString(10),
+      rawFacts: observationEvidence(preObservation),
     },
     session: {
       ...sessionRecord,
@@ -634,6 +710,11 @@ async function runFull(client: PublicClient, market: Gate0Market): Promise<void>
       mintBlockNumber: receipt.blockNumber.toString(10),
       topLevelTo: tx.to,
       topLevelSelector: txSelector,
+      envelope: directCall ? "DIRECT_VENUS" : "ALTANA_ORCHESTRATOR",
+      expectedInnerTarget: market.config.vToken,
+      expectedInnerSelector: MINT_SELECTOR,
+      attributionMethod: "bounded effective authority + Venus Mint and ERC-20 Transfer receipt events",
+      verifiedMintEffects: mintEffects,
     },
     postState: {
       blockNumber: postObservation.blockNumber,
@@ -643,6 +724,7 @@ async function runFull(client: PublicClient, market: Gate0Market): Promise<void>
       healthFactor: formatMantissa(postHf),
       healthFactorMantissa: postHf.toString(10),
       improved: true,
+      rawFacts: observationEvidence(postObservation),
     },
     revocation: {
       hash: revokeHash ?? null,
@@ -661,7 +743,7 @@ async function runFull(client: PublicClient, market: Gate0Market): Promise<void>
     join(ROOT, "deployments", "evidence", `gate0-full-${market.symbol.toLowerCase()}.json`),
     evidence,
   );
-  freezeDeploymentProfile(market, marketLive.implementation, postObservation.blockNumber);
+  freezeDeploymentProfile(market, marketLive.implementation, postObservation);
 
   // Patch verification flag on the frozen profile.
   const profilePath = join(ROOT, "deployments", "bsc-testnet.json");

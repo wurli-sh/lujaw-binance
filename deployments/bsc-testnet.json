@@ -12,12 +12,16 @@
     "oracle": "0x3cD69251D04A28d887Ac14cbe2E14c52F3D57823",
     "vaiController": "0xf70C3C6b749BbAb89C081737334E74C9aFD4BE16",
     "vai": "0x5fFbE5302BadED40941A403228E6AD03f93752d9",
+    "nativeVToken": "0x2e7222e51c0f6e98610a1543aa3836e092cde62c",
     "market": {
       "symbol": "USDT",
       "vToken": "0xb7526572FFE56AB9D7489838Bf2E18e3323b441A",
       "vTokenImplementation": "0x73fF75092Da265b87b25ffB943c47C90419a04A6",
       "underlying": "0xA11c8D9DC9b66E209Ef60F0C8D969D3CD988782c",
       "underlyingDecimals": 6,
+      "liquidationThresholdMantissa": "800000000000000000",
+      "liquidationThresholdVerifiedAtBlock": "129711927",
+      "oraclePriceMantissaAtVerification": "500000000000000000000000000000",
       "supplyTarget": "0xb7526572FFE56AB9D7489838Bf2E18e3323b441A",
       "supplySelector": "0xa0712d68",
       "supplySignature": "mint(uint256)",
@@ -49,11 +53,19 @@
     "effectiveAuthority": {
       "readFrom": "wallet EIP-7702 address via canExecutePackedInfos + spendInfos + getKeys",
       "criticalCodes": [
+        "UNREQUESTED_CALL_RULE",
         "WILDCARD_TARGET",
+        "WILDCARD_SELECTOR",
         "SUPER_ADMIN_KEY",
         "KEY_NOT_REGISTERED",
+        "UNREQUESTED_SPEND_LIMIT",
         "SPEND_LIMIT_ENLARGED",
-        "WALLET_WIDE_RULE"
+        "WALLET_WIDE_RULE",
+        "EXPIRY_MISMATCH"
+      ],
+      "nonBlockingExceptions": [
+        "verified Altana Orchestrator wildcard-selector rule",
+        "constraints narrower than requested, including a non-zero earlier expiry"
       ]
     }
   },
