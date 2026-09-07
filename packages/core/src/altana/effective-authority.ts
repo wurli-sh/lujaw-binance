@@ -85,8 +85,10 @@ export interface AuthorityDiscrepancy {
 
 const CRITICAL_CODES: readonly DiscrepancyCode[] = [
   "WILDCARD_TARGET",
+  "WILDCARD_SELECTOR",
   "SUPER_ADMIN_KEY",
   "KEY_NOT_REGISTERED",
+  "UNREQUESTED_SPEND_LIMIT",
   "SPEND_LIMIT_ENLARGED",
   "WALLET_WIDE_RULE",
 ];
@@ -118,10 +120,11 @@ export function diffRequestedVsEnforced(
     code: DiscrepancyCode,
     message: string,
     extra: Omit<AuthorityDiscrepancy, "code" | "severity" | "message"> = {},
+    severity?: DiscrepancySeverity,
   ): void => {
     discrepancies.push({
       code,
-      severity: CRITICAL_CODES.includes(code) ? "CRITICAL" : "DISCLOSE",
+      severity: severity ?? (CRITICAL_CODES.includes(code) ? "CRITICAL" : "DISCLOSE"),
       message,
       ...extra,
     });
@@ -166,11 +169,17 @@ export function diffRequestedVsEnforced(
           `The wallet layer added a wildcard-selector permission for the Orchestrator at ${rule.target}. Every session key receives this; it is required for the session to submit anything at all, and it was not requested by LUJAW`,
           { target: rule.target, selector: rule.selector },
         );
+      } else if (rule.selectorIsWildcard) {
+        add("WILDCARD_SELECTOR", `Every method on ${rule.target} is permitted`, {
+          target: rule.target,
+          selector: rule.selector,
+        });
       } else {
         add(
           "UNREQUESTED_CALL_RULE",
           `The account enforces a rule for ${rule.target} that was never requested`,
           { target: rule.target, selector: rule.selector },
+          "CRITICAL",
         );
       }
       continue;
@@ -251,6 +260,8 @@ export function diffRequestedVsEnforced(
     add(
       "EXPIRY_MISMATCH",
       `The account expires this key at ${enforced.expiry}, not the requested ${context.requestedExpiry}`,
+      {},
+      enforced.expiry === 0 || enforced.expiry > context.requestedExpiry ? "CRITICAL" : "DISCLOSE",
     );
   }
 

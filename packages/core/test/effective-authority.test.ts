@@ -166,6 +166,21 @@ describe("diffRequestedVsEnforced", () => {
     const discrepancies = diffRequestedVsEnforced(REQUESTED, state, { orchestrator: ORCHESTRATOR });
     expect(discrepancies[0]!.message).not.toContain("Orchestrator");
     expect(discrepancies[0]!.target).toBe(stranger);
+    expect(discrepancies[0]!.severity).toBe("CRITICAL");
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
+  });
+
+  it("treats a wildcard selector on the requested target as critical", () => {
+    const state = enforced({
+      callRules: [decodeCanExecuteEntry(packed(VUSDT, ANY_FN_SEL))],
+    });
+
+    const discrepancies = diffRequestedVsEnforced(REQUESTED, state, {
+      orchestrator: ORCHESTRATOR,
+    });
+
+    expect(discrepancies.some((d) => d.code === "WILDCARD_SELECTOR")).toBe(true);
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
   });
 
   it("treats a wildcard target as critical", () => {
@@ -239,6 +254,31 @@ describe("diffRequestedVsEnforced", () => {
     expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
   });
 
+  it("treats an unrequested spendable token as critical", () => {
+    const otherToken: Address = "0x7777777777777777777777777777777777777777";
+    const state = enforced({
+      spendLimits: [
+        ...enforced().spendLimits,
+        {
+          token: otherToken,
+          period: "day",
+          periodEnum: 2,
+          limit: 1n,
+          currentSpent: 0n,
+          currentPeriodStart: 0n,
+          remaining: 1n,
+        },
+      ],
+    });
+
+    const discrepancies = diffRequestedVsEnforced(REQUESTED, state, {
+      orchestrator: ORCHESTRATOR,
+    });
+
+    expect(discrepancies.some((d) => d.code === "UNREQUESTED_SPEND_LIMIT")).toBe(true);
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
+  });
+
   it("reports a reduced cap without blocking activation", () => {
     const state = enforced({
       spendLimits: [
@@ -278,11 +318,30 @@ describe("diffRequestedVsEnforced", () => {
     expect(discrepancies.some((d) => d.code === "MISSING_REQUESTED_SPEND_LIMIT")).toBe(true);
   });
 
-  it("reports an expiry the account did not honour", () => {
+  it("blocks an expiry later than requested", () => {
     const discrepancies = diffRequestedVsEnforced(REQUESTED, enforced(), {
       orchestrator: ORCHESTRATOR,
       requestedExpiry: 1_700_000_000,
     });
     expect(discrepancies.some((d) => d.code === "EXPIRY_MISMATCH")).toBe(true);
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
+  });
+
+  it("discloses without blocking an expiry earlier than requested", () => {
+    const discrepancies = diffRequestedVsEnforced(REQUESTED, enforced(), {
+      orchestrator: ORCHESTRATOR,
+      requestedExpiry: 1_900_000_000,
+    });
+    expect(discrepancies.some((d) => d.code === "EXPIRY_MISMATCH")).toBe(true);
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(false);
+  });
+
+  it("blocks a zero expiry because it means the key never expires", () => {
+    const discrepancies = diffRequestedVsEnforced(REQUESTED, enforced({ expiry: 0 }), {
+      orchestrator: ORCHESTRATOR,
+      requestedExpiry: 1_900_000_000,
+    });
+    expect(discrepancies.some((d) => d.code === "EXPIRY_MISMATCH")).toBe(true);
+    expect(hasCriticalDiscrepancy(discrepancies)).toBe(true);
   });
 });
