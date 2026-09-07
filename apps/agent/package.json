@@ -1,0 +1,6 @@
+{
+  "name": "@lujaw/agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Phase 2: CLI, MCP, and Agent OS orchestration. Stub in Phase 1."
+}
