@@ -1,0 +1,132 @@
+{
+  "version": "lujaw.gate0-evidence/1",
+  "mode": "full",
+  "chainId": 97,
+  "market": "USDT",
+  "account": "0x658d1744c94c743e7f759be8a2943a044cbc440b",
+  "plan": {
+    "topUpRaw": "1000000",
+    "spendCapRaw": "5000000",
+    "nativeCapWei": "10000000000000000",
+    "expiry": 1788820440,
+    "supplySelector": "0xa0712d68",
+    "supplyTarget": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a"
+  },
+  "preState": {
+    "blockNumber": "129711828",
+    "blockHash": "0x6dc217350aa88bfb1eae4a44f2d180c31f5c0a7c1df5ccb25d3e47f92c3e8c3a",
+    "weightedCollateralUsd": "31999999999986107449",
+    "totalBorrowUsd": "7500000000000000000",
+    "healthFactor": "4.266666",
+    "healthFactorMantissa": "4266666666664814326"
+  },
+  "session": {
+    "chainId": 97,
+    "walletAddress": "0x658d1744c94c743e7f759be8a2943a044cbc440b",
+    "publicKey": "0x04e049ca77125cfae7122ea44fa98bf6777edcb0e447f9e78cfee4302af27b720a15386d7b5e6fcdfc05844b60d56573ac45a9833b02ad3678a6438616b7a0cdff",
+    "keyHash": "0x8f6861ba7f8f9d0ec533b2cd632b34a4e496ea2e984989a7c7aec8cc52095756",
+    "keyId": "0x00c6614670fe46f782cbda0bb790b851d723987253c78fc421a2be07c3673292",
+    "requestedPermissions": {
+      "calls": [
+        {
+          "to": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+          "signature": "mint(uint256)"
+        }
+      ],
+      "spend": [
+        {
+          "limit": "5000000",
+          "period": "day",
+          "token": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c"
+        },
+        {
+          "limit": "10000000000000000",
+          "period": "day"
+        }
+      ]
+    },
+    "expiry": 1788820440,
+    "grantTxHash": "0x6eedd409ecfc2682f4b6d153920cee3a59a6c803ecf8479a6a7a8e2589046ce2",
+    "revokeTxHash": "0x6b5d125f53de5605d8623a7688fcf0d23dea1430a6b9f261ad75de171aae740c"
+  },
+  "authority": {
+    "requested": {
+      "calls": [
+        {
+          "to": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+          "signature": "mint(uint256)"
+        }
+      ],
+      "spend": [
+        {
+          "limit": "5000000",
+          "period": "day",
+          "token": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c"
+        },
+        {
+          "limit": "10000000000000000",
+          "period": "day"
+        }
+      ]
+    },
+    "enforced": {
+      "registered": true,
+      "expiry": 1788820440,
+      "isSuperAdmin": false,
+      "callRuleCount": 2,
+      "walletWideRuleCount": 0,
+      "spendLimits": [
+        {
+          "token": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+          "period": "day",
+          "limit": "5000000",
+          "remaining": "5000000"
+        },
+        {
+          "token": "0x0000000000000000000000000000000000000000",
+          "period": "day",
+          "limit": "10000000000000000",
+          "remaining": "10000000000000000"
+        }
+      ],
+      "observedAtBlock": "129711911"
+    },
+    "discrepancies": [
+      {
+        "code": "UNREQUESTED_CALL_RULE",
+        "severity": "DISCLOSE",
+        "message": "The wallet layer added a wildcard-selector permission for the Orchestrator at 0xcb5cef3c54aa90e9a7ad602a258d3d360cc862b9. Every session key receives this; it is required for the session to submit anything at all, and it was not requested by LUJAW",
+        "target": "0xcb5cef3c54aa90e9a7ad602a258d3d360cc862b9",
+        "selector": "0x32323232"
+      }
+    ]
+  },
+  "transaction": {
+    "approveHash": "0x06cde75ef55927892bf64a552f76dcb3baea62c539ef6c567160e6dd07e3a0c7",
+    "approveExplorer": "https://testnet.bscscan.com/tx/0x06cde75ef55927892bf64a552f76dcb3baea62c539ef6c567160e6dd07e3a0c7",
+    "mintHash": "0xd84ea69c77ab4701267263bcac27529b91b6fd3dedb642a24b565f730021f0fe",
+    "mintExplorer": "https://testnet.bscscan.com/tx/0xd84ea69c77ab4701267263bcac27529b91b6fd3dedb642a24b565f730021f0fe",
+    "mintStatus": "CONFIRMED",
+    "mintBlockNumber": "129711921",
+    "topLevelTo": "0xcb5cef3c54aa90e9a7ad602a258d3d360cc862b9",
+    "topLevelSelector": "0x09c5eabe"
+  },
+  "postState": {
+    "blockNumber": "129711927",
+    "blockHash": "0x9c909af11b2b7a6c6e2983feade2937633e6af02591feb2a7e2c665cffeda193",
+    "weightedCollateralUsd": "32399999999912650384",
+    "totalBorrowUsd": "7500000000000000000",
+    "healthFactor": "4.319999",
+    "healthFactorMantissa": "4319999999988353384",
+    "improved": true
+  },
+  "revocation": {
+    "hash": "0x6b5d125f53de5605d8623a7688fcf0d23dea1430a6b9f261ad75de171aae740c",
+    "explorer": "https://testnet.bscscan.com/tx/0x6b5d125f53de5605d8623a7688fcf0d23dea1430a6b9f261ad75de171aae740c",
+    "registeredAfter": false,
+    "keyStoreValid": false
+  },
+  "remainingAllowance": "4000000",
+  "remainingAllowanceNote": "Session revocation does not clear the ERC-20 allowance. Remaining allowance disclosed.",
+  "outcome": "GATE0_PASSED"
+}

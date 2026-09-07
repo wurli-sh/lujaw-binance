@@ -1,0 +1,81 @@
+{
+  "version": "lujaw.deployment/1",
+  "environment": "bsc-testnet",
+  "chainId": 97,
+  "rpcEnvVar": "BSC_TESTNET_RPC_URL",
+  "explorer": {
+    "address": "https://testnet.bscscan.com/address/{address}",
+    "tx": "https://testnet.bscscan.com/tx/{hash}"
+  },
+  "venus": {
+    "comptroller": "0x94d1820b2D1c7c7452A163983Dc888CEC546b77D",
+    "oracle": "0x3cD69251D04A28d887Ac14cbe2E14c52F3D57823",
+    "vaiController": "0xf70C3C6b749BbAb89C081737334E74C9aFD4BE16",
+    "vai": "0x5fFbE5302BadED40941A403228E6AD03f93752d9",
+    "market": {
+      "symbol": "USDT",
+      "vToken": "0xb7526572FFE56AB9D7489838Bf2E18e3323b441A",
+      "vTokenImplementation": "0x73fF75092Da265b87b25ffB943c47C90419a04A6",
+      "underlying": "0xA11c8D9DC9b66E209Ef60F0C8D969D3CD988782c",
+      "underlyingDecimals": 6,
+      "supplyTarget": "0xb7526572FFE56AB9D7489838Bf2E18e3323b441A",
+      "supplySelector": "0xa0712d68",
+      "supplySignature": "mint(uint256)",
+      "approveSpender": "0xb7526572FFE56AB9D7489838Bf2E18e3323b441A"
+    },
+    "failoverMarket": {
+      "symbol": "USDC",
+      "vToken": "0xD5C4C2e2facBEB59D0216D0595d63FcDc6F9A1a7",
+      "underlying": "0x16227D60f7a0e586C66B005219dfc887D13C9531",
+      "underlyingDecimals": 6,
+      "note": "Single failover if USDT path fails Gate 0 full sequence"
+    },
+    "accounting": {
+      "oracleScaleRule": "10^(36 - underlyingDecimals)",
+      "liquidationThresholdSource": "Comptroller.markets(vToken) field 4 of 7",
+      "vaiDebtSource": "VAIController.getVAIRepayAmount at par 1e18",
+      "debtUniverse": "getAllMarkets balances + VAI; not getAssetsIn alone",
+      "collateralUniverse": "entered markets only (getAssetsIn)"
+    }
+  },
+  "altana": {
+    "sdkVersion": "0.7.1",
+    "relayUrl": "https://testnet-relay.altana.network",
+    "keyStore": "0x6b8361C29d05D498b1a12B54A37310f94171E94A",
+    "keyStoreController": "0xb530D1971f5453F3359518343F05D0AedFfF7e12",
+    "accountImplementation": "0x33aD2F49ab9f122f5F0FDF579f575724EfF353DE",
+    "orchestrator": "0xcb5CEf3C54aa90e9A7ad602A258D3d360cC862B9",
+    "feeToken": "NATIVE",
+    "effectiveAuthority": {
+      "readFrom": "wallet EIP-7702 address via canExecutePackedInfos + spendInfos + getKeys",
+      "criticalCodes": [
+        "WILDCARD_TARGET",
+        "SUPER_ADMIN_KEY",
+        "KEY_NOT_REGISTERED",
+        "SPEND_LIMIT_ENLARGED",
+        "WALLET_WIDE_RULE"
+      ]
+    }
+  },
+  "verification": {
+    "blockNumber": "129711927",
+    "provenance": [
+      {
+        "source": "live BSC testnet RPC observe + mandate-seeded addresses re-verified",
+        "chainId": 97,
+        "market": "USDT",
+        "result": "market listed, mint not paused, decimals match, implementation readable",
+        "healthFactorReplay": "fixture account reconstructs HF 2.505467 matching frozen evidence"
+      },
+      {
+        "source": "scripts/gate0.ts full sequence",
+        "grantTx": "0x6eedd409ecfc2682f4b6d153920cee3a59a6c803ecf8479a6a7a8e2589046ce2",
+        "mintTx": "0xd84ea69c77ab4701267263bcac27529b91b6fd3dedb642a24b565f730021f0fe",
+        "revokeTx": "0x6b5d125f53de5605d8623a7688fcf0d23dea1430a6b9f261ad75de171aae740c",
+        "result": "HF improved; session revoked; no CRITICAL authority discrepancy"
+      }
+    ],
+    "gate0FullPath": "passed",
+    "gate0ObservePath": "passed"
+  }
+}
