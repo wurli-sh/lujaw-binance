@@ -40,6 +40,7 @@ async function observeMarket(
   account: Address,
   entered: boolean,
   blockNumber: bigint,
+  nativeVToken: Address,
 ): Promise<RawMarketObservation> {
   const at = { blockNumber } as const;
 
@@ -66,10 +67,16 @@ async function observeMarket(
       })),
   ]);
 
-  const underlying = await client
-    .readContract({ address: vToken, abi: VTOKEN_ABI, functionName: "underlying", ...at })
-    .then((value) => normalize(value))
-    .catch(() => null);
+  const isNativeMarket = vToken === normalize(nativeVToken);
+  const underlying = isNativeMarket
+    ? { value: null, reason: undefined as string | undefined }
+    : await client
+        .readContract({ address: vToken, abi: VTOKEN_ABI, functionName: "underlying", ...at })
+        .then((value) => ({ value: normalize(value) as Address | null, reason: undefined as string | undefined }))
+        .catch((error: Error) => ({
+          value: null,
+          reason: error.message.split("\n")[0] ?? "underlying() reverted",
+        }));
 
   // Degrade like every other read here rather than throwing. A transient RPC
   // hiccup on one market of forty-six would otherwise abort an entire trial,
@@ -78,14 +85,16 @@ async function observeMarket(
   // charge: a market with a balance and unknown decimals cannot be priced, so
   // `marketsWithUnpricedExposure` catches it.
   const decimals =
-    underlying === null
+    isNativeMarket
       ? { value: NATIVE_UNDERLYING_DECIMALS as number | null, reason: undefined as string | undefined }
+      : underlying.value === null
+        ? { value: null, reason: underlying.reason }
       : await client
-          .readContract({ address: underlying, abi: ERC20_ABI, functionName: "decimals", ...at })
+          .readContract({ address: underlying.value, abi: ERC20_ABI, functionName: "decimals", ...at })
           .then((value) => ({ value: Number(value) as number | null, reason: undefined as string | undefined }))
           .catch((error: Error) => ({
             value: null,
-            reason: error.message.split("\n")[0] ?? `decimals() reverted for ${underlying}`,
+            reason: error.message.split("\n")[0] ?? `decimals() reverted for ${underlying.value}`,
           }));
 
   // A market whose oracle refuses to price it is recorded as unpriced, never as
@@ -106,11 +115,11 @@ async function observeMarket(
     ? `getAccountSnapshot returned error ${balances.snap![0]}`
     : balances.reason;
 
-  const metadataReason = metadata.reason ?? decimals.reason;
+  const metadataReason = metadata.reason ?? underlying.reason ?? decimals.reason;
 
   return {
     vToken,
-    underlying,
+    underlying: underlying.value,
     underlyingDecimals: decimals.value,
     isListed: metadata.value === null ? null : metadata.value[0],
     collateralFactorMantissa: metadata.value === null ? null : metadata.value[1].toString(10),
@@ -163,7 +172,11 @@ export async function observeAccount(
       // Comptroller Diamond reverts "Function does not exist".
       client
         .readContract({ address: deployment.vaiController, abi: VAI_CONTROLLER_ABI, functionName: "getVAIRepayAmount", args: [normalizedAccount], ...at })
-        .catch(() => 0n),
+        .then((value) => ({ value: value.toString(10) as string | null, reason: undefined as string | undefined }))
+        .catch((error: Error) => ({
+          value: null,
+          reason: error.message.split("\n")[0] ?? "getVAIRepayAmount() reverted",
+        })),
     ]);
 
   const entered = new Set(enteredMarkets.map((address) => normalize(address)));
@@ -171,7 +184,16 @@ export async function observeAccount(
 
   const markets = await Promise.all(
     universe.map((vToken) =>
-      observeMarket(client, deployment.comptroller, deployment.oracle, vToken, normalizedAccount, entered.has(vToken), blockNumber),
+      observeMarket(
+        client,
+        deployment.comptroller,
+        deployment.oracle,
+        vToken,
+        normalizedAccount,
+        entered.has(vToken),
+        blockNumber,
+        deployment.nativeVToken,
+      ),
     ),
   );
 
@@ -196,7 +218,10 @@ export async function observeAccount(
     vai: {
       controller: deployment.vaiController,
       mintedPrincipal: mintedPrincipal.toString(10),
-      repayAmount: repayAmount.toString(10),
+      repayAmount: repayAmount.value,
+      ...(repayAmount.reason === undefined
+        ? {}
+        : { repayAmountUnavailableReason: repayAmount.reason }),
       decimals: 18,
     },
     accountLiquidity: {

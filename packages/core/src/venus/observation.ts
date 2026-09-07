@@ -95,7 +95,9 @@ export interface RawVaiObservation {
    * larger than the principal. It is not callable on the Comptroller Diamond,
    * which reverts `Diamond: Function does not exist`.
    */
-  readonly repayAmount: string;
+  readonly repayAmount: string | null;
+  /** Present when accrued VAI debt could not be read. Unknown debt must fail closed. */
+  readonly repayAmountUnavailableReason?: string;
   /** VAI is a dollar-denominated unit, so this is 18 on both chains. */
   readonly decimals: number;
 }
@@ -189,6 +191,11 @@ export function marketsWithUnpricedExposure(
   observation: RawVenusObservation,
 ): readonly RawMarketObservation[] {
   return observation.markets.filter((market) => {
+    // When balance reads fail there is no safe way to prove that this market
+    // carries no debt or collateral. Treat the market as unknown exposure even
+    // though both numeric fields are null; null is not a zero balance.
+    if (market.balancesUnavailableReason !== undefined) return true;
+
     const hasBalance =
       (market.vTokenBalance !== null && BigInt(market.vTokenBalance) > 0n) ||
       (market.borrowBalance !== null && BigInt(market.borrowBalance) > 0n);
@@ -197,6 +204,7 @@ export function marketsWithUnpricedExposure(
     // price unusable even when the oracle answered.
     return (
       market.priceMantissa === null ||
+      BigInt(market.priceMantissa) === 0n ||
       market.liquidationThresholdMantissa === null ||
       market.underlyingDecimals === null
     );
@@ -211,7 +219,10 @@ export function marketsWithUnpricedExposure(
  * come out wrong.
  */
 export function hasDebtOutsideEnteredMarkets(observation: RawVenusObservation): boolean {
-  if (BigInt(observation.vai.repayAmount) > 0n) return true;
+  // Principal proves debt exists even if the accrued repay amount could not be
+  // read. The reconstruction will separately flag the amount as unknown.
+  if (BigInt(observation.vai.mintedPrincipal) > 0n) return true;
+  if (observation.vai.repayAmount !== null && BigInt(observation.vai.repayAmount) > 0n) return true;
 
   const entered = new Set(observation.enteredMarkets.map((address) => address.toLowerCase()));
   return marketsWithDebt(observation).some(

@@ -25,6 +25,8 @@ export interface VenusDeployment {
   readonly underlyingSymbol: string;
   readonly underlyingDecimals: number;
   readonly oracle: Address;
+  /** The sole market whose `underlying()` revert denotes native BNB. */
+  readonly nativeVToken: Address;
   /**
    * VAI is Venus's own stablecoin and its debt is part of the same solvency
    * calculation as the vToken markets, but it is not a market and does not
@@ -44,6 +46,7 @@ export const VENUS_BSC_TESTNET: VenusDeployment = {
   underlyingSymbol: "USDT",
   underlyingDecimals: 6,
   oracle: "0x3cd69251d04a28d887ac14cbe2e14c52f3d57823",
+  nativeVToken: "0x2e7222e51c0f6e98610a1543aa3836e092cde62c",
   vaiController: "0xf70c3c6b749bbab89c081737334e74c9afd4be16",
   vai: "0x5ffbe5302baded40941a403228e6ad03f93752d9",
 };

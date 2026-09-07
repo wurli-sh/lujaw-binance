@@ -77,6 +77,75 @@ describe("VENUS-ACCOUNTING-004: fail closed on unpriced exposure", () => {
     expect(result.unpriced.some((u) => u.vToken === VUSDC)).toBe(true);
   });
 
+  it("flags a market with balance and a zero oracle price", () => {
+    const poisoned = {
+      ...FROZEN,
+      markets: FROZEN.markets.map((market) =>
+        market.vToken === VUSDC ? { ...market, priceMantissa: "0" } : market,
+      ),
+    };
+
+    expect(marketsWithUnpricedExposure(poisoned).some((m) => m.vToken === VUSDC)).toBe(true);
+    expect(reconstruct(poisoned).unpriced).toContainEqual({
+      vToken: VUSDC,
+      reason: "the oracle returned a zero price for a market carrying exposure",
+    });
+  });
+
+  it("flags a market whose balances could not be read", () => {
+    const poisoned = {
+      ...FROZEN,
+      markets: FROZEN.markets.map((market, index) =>
+        index === 1
+          ? {
+              ...market,
+              vTokenBalance: null,
+              borrowBalance: null,
+              exchangeRateMantissa: null,
+              balancesUnavailableReason: "forced balance read failure",
+            }
+          : market,
+      ),
+    };
+
+    expect(marketsWithUnpricedExposure(poisoned)).toContainEqual(
+      expect.objectContaining({ balancesUnavailableReason: "forced balance read failure" }),
+    );
+    expect(reconstruct(poisoned).unpriced).toContainEqual(
+      expect.objectContaining({ reason: "forced balance read failure" }),
+    );
+  });
+
+  it("flags accrued VAI debt as unknown when its controller read failed", () => {
+    const poisoned = {
+      ...FROZEN,
+      vai: {
+        ...FROZEN.vai,
+        repayAmount: null,
+        repayAmountUnavailableReason: "forced VAI controller failure",
+      },
+    };
+
+    const result = reconstruct(poisoned);
+    expect(result.unpriced).toContainEqual({
+      vToken: FROZEN.vai.controller,
+      reason: "forced VAI controller failure",
+    });
+    expect(hasDebtOutsideEnteredMarkets(poisoned)).toBe(true);
+  });
+
+  it("flags an accrued VAI amount below its principal as inconsistent", () => {
+    const poisoned = {
+      ...FROZEN,
+      vai: { ...FROZEN.vai, repayAmount: "0" },
+    };
+
+    expect(reconstruct(poisoned).unpriced).toContainEqual({
+      vToken: FROZEN.vai.controller,
+      reason: "accrued VAI repay amount is below minted principal",
+    });
+  });
+
   it("weights collateral by liquidation threshold field 4, not collateral factor", () => {
     const market = marketAt(FROZEN, VUSDC);
     const cf = BigInt(market.collateralFactorMantissa!);

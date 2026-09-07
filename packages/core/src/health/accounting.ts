@@ -109,6 +109,9 @@ function describeUnpriced(market: RawMarketObservation): string {
   if (market.priceMantissa === null) {
     return market.priceUnavailableReason ?? "the oracle refused to price this market";
   }
+  if (BigInt(market.priceMantissa) === 0n) {
+    return "the oracle returned a zero price for a market carrying exposure";
+  }
   if (market.underlyingDecimals === null) {
     return (
       market.metadataUnavailableReason ??
@@ -133,6 +136,20 @@ export function reconstruct(observation: RawVenusObservation): Reconstruction {
     vToken: market.vToken,
     reason: describeUnpriced(market),
   }));
+
+  if (observation.vai.repayAmount === null) {
+    unpriced.push({
+      vToken: observation.vai.controller,
+      reason:
+        observation.vai.repayAmountUnavailableReason ??
+        "accrued VAI debt could not be read",
+    });
+  } else if (BigInt(observation.vai.repayAmount) < BigInt(observation.vai.mintedPrincipal)) {
+    unpriced.push({
+      vToken: observation.vai.controller,
+      reason: "accrued VAI repay amount is below minted principal",
+    });
+  }
 
   // A market carrying a balance that is missing a price or a weight also fails
   // the check above. Anything unreadable in a way that check does not cover is
@@ -200,7 +217,11 @@ export function reconstruct(observation: RawVenusObservation): Reconstruction {
 
   // VAI last, and unconditionally. It is minted through the Comptroller rather
   // than borrowed from a vToken, so no amount of market enumeration reaches it.
-  const vaiOwed = BigInt(observation.vai.repayAmount);
+  // The null case is already represented in `unpriced`. Use zero only to keep
+  // the partial arithmetic inspectable; consumers must refuse any result with
+  // a non-empty `unpriced` list.
+  const vaiOwed =
+    observation.vai.repayAmount === null ? 0n : BigInt(observation.vai.repayAmount);
   const nonMarketBorrowUsd = toUsd(vaiOwed, VAI_PAR_PRICE_MANTISSA);
   if (vaiOwed > 0n) {
     exposures.push({
