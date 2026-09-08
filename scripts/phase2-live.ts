@@ -15,6 +15,7 @@ import {
   cmdRevoke,
   createRuntime,
 } from "../apps/agent/src/runtime.js";
+import { generatePrivateKey } from "viem/accounts";
 
 function summarizeEpisode(
   label: string,
@@ -40,9 +41,20 @@ function summarizeEpisode(
 }
 
 async function main(): Promise<void> {
-  const runtime = createRuntime();
+  const runtime = createRuntime({ requireOwner: true });
   console.log(`account=${runtime.account}`);
   console.log(`market=${runtime.deployment.venus.market.symbol} chain=${runtime.deployment.chainId}`);
+
+  // Clear any leftover live session from a prior interrupted run (owner-only revoke).
+  try {
+    const leftover = await cmdRevoke(runtime);
+    console.log(`\n=== cleanup revoke ===\nok=${leftover.ok}`);
+    if (leftover.revokeHash) console.log(`revokeTx=${leftover.revokeHash}`);
+  } catch (error) {
+    console.log(
+      `\n=== cleanup revoke ===\nskipped (${error instanceof Error ? error.message : String(error)})`,
+    );
+  }
 
   const check = await cmdCheck(runtime);
   summarizeEpisode("check", check.episode);
@@ -75,10 +87,16 @@ async function main(): Promise<void> {
   }
   console.log(`\n=== activate draft ===\nmaxTopUp=${preview.plan.maxTopUpRaw} intervene=${preview.plan.interveneBelow}`);
 
+  // Never reuse a revoked/env keyId — generate a fresh session signer for this grant.
+  const sessionPrivateKey = generatePrivateKey();
+  process.env.SESSION_PRIVATE_KEY = sessionPrivateKey;
+  console.log("sessionKey=fresh (ephemeral for this process; not printed)");
+
   const activated = await cmdActivate(runtime, {
     draft,
     accept: true,
     acceptedPlanHash: preview.planHash!,
+    sessionPrivateKey,
   });
   if (!activated.ok) {
     throw new Error(`activate failed: ${activated.message}`);
