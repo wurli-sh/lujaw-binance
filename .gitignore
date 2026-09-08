@@ -29,3 +29,4 @@ apps/agent/state/
 # Commit sanitized evidence under deployments/evidence/ only after review.
 deployments/evidence/*.local.json
 .npmrc
+.vercel

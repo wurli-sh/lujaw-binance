@@ -1,12 +1,13 @@
 # No-funds demo: real refusal, simulated safe path
 
-Prove the seatbelt with no funds: simulated ALLOW path + live empty-account BLOCK.
+Prove the seatbelt with no funds: live empty-account BLOCK (primary recording)
+plus an optional labeled local ALLOW simulation.
 
-This is the intended hackathon demonstration when the Agentic Spot sub-account
-has no disposable USDT. It never places, authorizes, or simulates an exchange
-fill.
+**Recording scope:** Codex CLI — Scene 1 only (live BLOCK). Script:
+[binance-cursor-demo.md](binance-cursor-demo.md). Scene 2 is optional /
+off-camera evidence, not part of the recorded cut.
 
-## Scene 1 — real Binance, blocked safely
+## Scene 1 — real Binance, blocked safely (record this)
 
 Use the connected Binance MCP to fetch only `BNBUSDT` Spot filters, depth, and
 the Agentic Spot account. Pass that observation to the connected LUJAW MCP for
@@ -23,7 +24,7 @@ authorizedOrder: null
 That is live, read-only evidence. Do not work around the block and do not call
 `lujaw_order_authorize` or any Binance trading tool.
 
-## Scene 2 — local simulation, positive preflight
+## Scene 2 — local simulation, positive preflight (optional / not in recording)
 
 Run the repository’s deterministic simulated-account test:
 
