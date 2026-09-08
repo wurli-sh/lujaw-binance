@@ -30,3 +30,7 @@ apps/agent/state/
 deployments/evidence/*.local.json
 .npmrc
 .vercel
+
+# Local demo voiceover toolkit (not versioned)
+demo/
+demo/generate_voiceover.py
