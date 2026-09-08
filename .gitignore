@@ -28,3 +28,4 @@ apps/agent/state/
 # Live Gate 0 evidence may contain wallet addresses; keep hashes, not secrets.
 # Commit sanitized evidence under deployments/evidence/ only after review.
 deployments/evidence/*.local.json
+.npmrc
