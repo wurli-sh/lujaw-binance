@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.12.2
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm typecheck
+      - run: pnpm build
+      - name: Verify publishable package contents
+        run: |
+          mkdir -p package-artifacts
+          pnpm --dir packages/core pack --pack-destination "$GITHUB_WORKSPACE/package-artifacts"
+          pnpm --dir apps/agent pack --pack-destination "$GITHUB_WORKSPACE/package-artifacts"
+          test -f package-artifacts/lujaw-core-0.1.0.tgz
+          test -f package-artifacts/lujaw-agent-0.1.0.tgz
