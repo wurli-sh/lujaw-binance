@@ -6,10 +6,11 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "build": "pnpm -r run build",
+    "build:mcp": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent build",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm --filter @lujaw/core test && pnpm --filter @lujaw/agent test",
-    "lujaw": "pnpm --filter @lujaw/agent lujaw",
-    "mcp": "pnpm --filter @lujaw/agent mcp",
+    "lujaw": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent lujaw",
+    "mcp": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent mcp",
     "phase2:live": "tsx --env-file=.env scripts/phase2-live.ts",
     "gate0": "tsx scripts/gate0.ts",
     "gate0:observe": "GATE0_MODE=observe tsx scripts/gate0.ts",

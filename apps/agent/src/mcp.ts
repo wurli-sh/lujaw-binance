@@ -1,9 +1,11 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env node
 /**
- * LUJAW MCP server — same four ops as the CLI, shared runtime.
+ * LUJAW MCP server — Binance Spot safety tools first; Venus secondary.
  */
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { existsSync } from "node:fs";
+import { loadEnvFile } from "node:process";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -11,13 +13,32 @@ import {
 import {
   cmdActivate,
   cmdCheck,
+  cmdMarkets,
   cmdRescue,
   cmdRevoke,
   createRuntime,
+  defaultStateDir,
+  PUBLIC_PROBE_ACCOUNT,
 } from "./runtime.js";
-import { activateToolArgsSchema, emptyToolArgsSchema } from "./tool-inputs.js";
+import {
+  accountToolArgsSchema,
+  activateToolArgsSchema,
+  emptyToolArgsSchema,
+} from "./tool-inputs.js";
+import { binanceToolDefinitions, handleBinanceTool } from "./binance/tools.js";
+import { venusToolDefinitions } from "./venus/tools.js";
 
-const runtime = createRuntime();
+if (existsSync(".env")) loadEnvFile(".env");
+
+let statefulRuntime: ReturnType<typeof createRuntime> | null = null;
+
+function getStatefulRuntime(requireOwner = false) {
+  if (statefulRuntime === null) statefulRuntime = createRuntime({ requireOwner });
+  if (requireOwner && !process.env.OWNER_PRIVATE_KEY?.trim()) {
+    throw new Error("OWNER_PRIVATE_KEY is required for this operation");
+  }
+  return statefulRuntime;
+}
 
 const server = new Server(
   { name: "lujaw", version: "0.1.0" },
@@ -25,53 +46,7 @@ const server = new Server(
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [
-    {
-      name: "lujaw_check",
-      description:
-        "Read-only Venus health check for the configured owner account. Writes an episode. AT_RISK returns HELD with CHECK_ONLY_AT_RISK (no spend).",
-      inputSchema: {
-        type: "object",
-        properties: {},
-        additionalProperties: false,
-      },
-    },
-    {
-      name: "lujaw_activate",
-      description:
-        "Draft and optionally grant a Care Plan session. Preset needs no LLM; NL uses AgentRouter schema-constrained output. Requires accept=true plus the displayed planHash to grant. Fresh session key every grant.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          preset: { type: "string", enum: ["conservative", "balanced"] },
-          nl: { type: "string" },
-          accept: { type: "boolean" },
-          planHash: { type: "string", pattern: "^0x[0-9a-fA-F]{64}$" },
-        },
-        additionalProperties: false,
-      },
-    },
-    {
-      name: "lujaw_rescue",
-      description:
-        "Evaluate and optionally execute a single buffered mint top-up under the active Care Plan. Requires live grant from activate in this process.",
-      inputSchema: {
-        type: "object",
-        properties: {},
-        additionalProperties: false,
-      },
-    },
-    {
-      name: "lujaw_revoke",
-      description:
-        "Revoke the live Altana session and disclose remaining ERC-20 allowance. Does not clear allowance.",
-      inputSchema: {
-        type: "object",
-        properties: {},
-        additionalProperties: false,
-      },
-    },
-  ],
+  tools: [...binanceToolDefinitions, ...venusToolDefinitions],
 }));
 
 function textResult(payload: unknown) {
@@ -89,14 +64,33 @@ function textResult(payload: unknown) {
   };
 }
 
+const BINANCE_TOOLS = new Set<string>(binanceToolDefinitions.map((t) => t.name));
+
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const name = request.params.name;
   const args = (request.params.arguments ?? {}) as Record<string, unknown>;
 
   try {
+    if (BINANCE_TOOLS.has(name)) {
+      const result = await handleBinanceTool(name, args, {
+        stateDir: defaultStateDir(),
+      });
+      return textResult(result);
+    }
     if (name === "lujaw_check") {
-      emptyToolArgsSchema.parse(args);
+      const parsed = accountToolArgsSchema.parse(args);
+      const runtime = parsed.account
+        ? createRuntime({ account: parsed.account as `0x${string}` })
+        : getStatefulRuntime();
       const result = await cmdCheck(runtime);
+      return textResult({ ok: true, ...result });
+    }
+    if (name === "lujaw_markets") {
+      const parsed = accountToolArgsSchema.parse(args);
+      const runtime = createRuntime({
+        account: (parsed.account ?? PUBLIC_PROBE_ACCOUNT) as `0x${string}`,
+      });
+      const result = await cmdMarkets(runtime);
       return textResult({ ok: true, ...result });
     }
     if (name === "lujaw_activate") {
@@ -104,7 +98,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const preset = parsed.preset;
       const nl = parsed.nl;
       const accept = parsed.accept === true;
-      const result = await cmdActivate(runtime, {
+      const result = await cmdActivate(getStatefulRuntime(accept), {
         draft: {
           ...(typeof preset === "string"
             ? { preset: preset as "conservative" | "balanced" }
@@ -118,12 +112,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
     if (name === "lujaw_rescue") {
       emptyToolArgsSchema.parse(args);
-      const result = await cmdRescue(runtime);
+      const result = await cmdRescue(getStatefulRuntime());
       return textResult({ ok: true, ...result });
     }
     if (name === "lujaw_revoke") {
       emptyToolArgsSchema.parse(args);
-      const result = await cmdRevoke(runtime);
+      const result = await cmdRevoke(getStatefulRuntime(true));
       return textResult(result);
     }
     return textResult({ ok: false, error: `unknown tool ${name}` });

@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env node
 /**
  * lujaw CLI — thin wrapper over shared orchestration.
  *
@@ -10,21 +10,28 @@
 import {
   cmdActivate,
   cmdCheck,
+  cmdMarkets,
   cmdRescue,
   cmdRevoke,
   createRuntime,
+  PUBLIC_PROBE_ACCOUNT,
 } from "./runtime.js";
 import { episodeExitCode } from "./tool-inputs.js";
+import { existsSync } from "node:fs";
+import { loadEnvFile } from "node:process";
+
+if (existsSync(".env")) loadEnvFile(".env");
 
 function usage(): string {
   return `Usage:
   lujaw check [--json] [--account 0x...]
+  lujaw markets [--json] [--account 0x...]
   lujaw activate --preset conservative|balanced [--accept <plan-hash>] [--json]
   lujaw activate --nl "..." [--accept <plan-hash>] [--json]
   lujaw rescue [--json]
   lujaw revoke [--json]
 
-Environment: BSC_TESTNET_RPC_URL; LUJAW_ACCOUNT for read-only check without owner key
+Environment: optional BSC_TESTNET_RPC_URL; LUJAW_ACCOUNT for read-only check without owner key
 Mutating commands: OWNER_PRIVATE_KEY for activate/revoke; SESSION_PRIVATE_KEY for accepted CLI activate/rescue
 Optional: AGENT_ROUTER_API_KEY, AGENT_ROUTER_BASE_URL, AGENT_ROUTER_MODEL, LUJAW_STATE_DIR
 Session keys: use a fresh externally-held SESSION_PRIVATE_KEY for each CLI activation.
@@ -71,7 +78,11 @@ async function main(): Promise<number> {
   const account = flags.get("account");
   try {
     const runtime = createRuntime({
-      ...(typeof account === "string" ? { account: account as `0x${string}` } : {}),
+      ...(typeof account === "string"
+        ? { account: account as `0x${string}` }
+        : command === "markets"
+          ? { account: PUBLIC_PROBE_ACCOUNT }
+          : {}),
       requireOwner:
         command === "revoke" ||
         (command === "activate" && typeof flags.get("accept") === "string"),
@@ -84,6 +95,14 @@ async function main(): Promise<number> {
         result.human,
       );
       return episodeExitCode(result.episode.outcome);
+    }
+
+    if (command === "markets") {
+      const result = await cmdMarkets(runtime);
+      print(result.verification, asJson, result.human);
+      return result.verification.markets.some(
+        (market) => market.observation === "INCONCLUSIVE",
+      ) ? 1 : 0;
     }
 
     if (command === "activate") {

@@ -1,16 +1,20 @@
 /**
  * Shared agent runtime: env, deployment, clients, in-memory live session.
  */
+import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   createAltanaAdapter,
   loadActiveState,
   loadDeployment,
+  observeSupply,
   runActivate,
   runCheck,
   runRescue,
   runRevoke,
+  venusDeploymentFromProfile,
+  verifyVenusSupplyMarkets,
   type ActiveState,
   type DeploymentProfile,
   type DraftCarePlanInput,
@@ -22,31 +26,35 @@ import { bscTestnet } from "viem/chains";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 
+export const PUBLIC_PROBE_ACCOUNT =
+  "0x000000000000000000000000000000000000dEaD" as Address;
+const DEFAULT_BSC_TESTNET_RPC_URL = "https://bsc-testnet-rpc.publicnode.com";
+
 export function defaultDeploymentPath(): string {
-  return (
-    process.env.LUJAW_DEPLOYMENT_PATH ??
-    join(repoRoot, "deployments", "bsc-testnet.json")
-  );
+  if (process.env.LUJAW_DEPLOYMENT_PATH) return process.env.LUJAW_DEPLOYMENT_PATH;
+  const bundled = join(here, "deployments", "bsc-testnet.json");
+  return existsSync(bundled)
+    ? bundled
+    : join(repoRoot, "deployments", "bsc-testnet.json");
 }
 
 export function defaultStateDir(): string {
-  return process.env.LUJAW_STATE_DIR ?? join(here, "..", "state");
+  return process.env.LUJAW_STATE_DIR ?? resolve(process.cwd(), ".lujaw");
 }
 
+/** Prefer `.lujaw/venus/` with hackathon fallback to legacy `.lujaw/` paths. */
 export function defaultStatePath(): string {
-  return join(defaultStateDir(), "active.json");
+  const nested = join(defaultStateDir(), "venus", "active.json");
+  const legacy = join(defaultStateDir(), "active.json");
+  if (existsSync(nested) || !existsSync(legacy)) return nested;
+  return legacy;
 }
 
 export function defaultEpisodesDir(): string {
-  return join(defaultStateDir(), "episodes");
-}
-
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value || value.trim().length === 0) {
-    throw new Error(`${name} is required`);
-  }
-  return value;
+  const nested = join(defaultStateDir(), "venus", "episodes");
+  const legacy = join(defaultStateDir(), "episodes");
+  if (existsSync(nested) || !existsSync(legacy)) return nested;
+  return legacy;
 }
 
 function normalizePrivateKey(raw: string): Hex {
@@ -76,7 +84,7 @@ export function createRuntime(options: {
   requireOwner?: boolean;
 } = {}): AgentRuntime {
   const deployment = loadDeployment(options.deploymentPath ?? defaultDeploymentPath());
-  const rpcUrl = requireEnv(deployment.rpcEnvVar);
+  const rpcUrl = process.env[deployment.rpcEnvVar]?.trim() || DEFAULT_BSC_TESTNET_RPC_URL;
   const ownerRaw = process.env.OWNER_PRIVATE_KEY?.trim();
   const ownerKey = ownerRaw ? normalizePrivateKey(ownerRaw) : undefined;
   if (options.requireOwner && ownerKey === undefined) {
@@ -108,6 +116,26 @@ export function createRuntime(options: {
     episodesDir: options.episodesDir ?? defaultEpisodesDir(),
     liveSession: null,
   };
+}
+
+export async function cmdMarkets(runtime: AgentRuntime) {
+  const observation = await observeSupply(
+    runtime.client,
+    venusDeploymentFromProfile(runtime.deployment),
+    runtime.account,
+  );
+  const verification = verifyVenusSupplyMarkets(observation, {
+    executeVerifiedVToken: runtime.deployment.venus.market.vToken,
+  });
+  const human = [
+    `Venus market capabilities at block ${verification.blockNumber}`,
+    ...verification.markets.map(
+      (market) =>
+        `${market.symbol}: observe=${market.observation} supply=${market.supply} execute=${market.execution}` +
+        (market.reasons.length > 0 ? ` (${market.reasons.join(", ")})` : ""),
+    ),
+  ].join("\n");
+  return { verification, human };
 }
 
 export async function cmdCheck(

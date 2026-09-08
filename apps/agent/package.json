@@ -1,20 +1,42 @@
 {
   "name": "@lujaw/agent",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
+  "license": "Apache-2.0",
   "description": "LUJAW CLI, MCP server, and runtime over @lujaw/core",
-  "bin": {
-    "lujaw": "./bin/lujaw.mjs"
+  "engines": {
+    "node": ">=20.12"
   },
+  "keywords": ["mcp", "binance-agent-os", "venus", "defi", "risk"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wurli-sh/lujaw-binance.git",
+    "directory": "apps/agent"
+  },
+  "files": ["dist"],
+  "bin": {
+    "lujaw": "./dist/cli.js",
+    "lujaw-mcp": "./dist/mcp.js"
+  },
+  "main": "./dist/runtime.js",
+  "types": "./dist/runtime.d.ts",
   "exports": {
-    ".": "./src/runtime.ts"
+    ".": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json && mkdir -p dist/deployments && cp ../../deployments/bsc-testnet.json dist/deployments/bsc-testnet.json",
     "lujaw": "tsx src/cli.ts",
     "mcp": "tsx src/mcp.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "pnpm --filter @lujaw/core build && tsc -p tsconfig.json --noEmit",
+    "pretest": "pnpm --filter @lujaw/core build",
     "test": "vitest run",
+    "prepack": "pnpm build",
     "clean": "rm -rf dist"
   },
   "dependencies": {
