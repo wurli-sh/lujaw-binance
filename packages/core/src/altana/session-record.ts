@@ -23,6 +23,8 @@ export interface SessionRecord {
   expiry: number;
   grantTxHash?: Hex;
   revokeTxHash?: Hex;
+  /** Wall-clock seconds when revoke succeeded; absent while the session is live. */
+  revokedAt?: number;
 }
 
 export interface SerializedCallPermission {

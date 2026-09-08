@@ -7,7 +7,10 @@
   "scripts": {
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
-    "test": "pnpm --filter @lujaw/core test",
+    "test": "pnpm --filter @lujaw/core test && pnpm --filter @lujaw/agent test",
+    "lujaw": "pnpm --filter @lujaw/agent lujaw",
+    "mcp": "pnpm --filter @lujaw/agent mcp",
+    "phase2:live": "tsx --env-file=.env scripts/phase2-live.ts",
     "gate0": "tsx scripts/gate0.ts",
     "gate0:observe": "GATE0_MODE=observe tsx scripts/gate0.ts",
     "gate0:full": "GATE0_MODE=full tsx --env-file=.env scripts/gate0.ts",

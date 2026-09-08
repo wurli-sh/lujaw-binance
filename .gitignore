@@ -1,16 +1,12 @@
-ethglobal-lisboa/
-ethglobal-lisboa/**
-mandate/
-mandate/**
 binance-mini-hk.md
-track-a-jul-aug-2026-winners.md
 research/
 research/**
 lujaw.md
 lujaw-v1.md
 lujaw-impl-plan.md
-AEGIS/
-AEGIS/**
+
+.superstack/
+*.superstack/
 
 .env
 .env.*
@@ -21,6 +17,10 @@ dist/
 *.tsbuildinfo
 .turbo/
 coverage/
+.next/
+
+# Agent runtime state (episodes / active session metadata)
+apps/agent/state/
 
 # Live Gate 0 evidence may contain wallet addresses; keep hashes, not secrets.
 # Commit sanitized evidence under deployments/evidence/ only after review.

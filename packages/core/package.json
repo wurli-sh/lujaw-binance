@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@altananetwork/sdk": "0.7.1",
-    "viem": "2.55.17"
+    "viem": "2.55.17",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/node": "22.13.10",
