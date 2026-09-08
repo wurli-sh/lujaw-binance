@@ -1,0 +1,53 @@
+{
+  "version": "lujaw.gate0-evidence/1",
+  "mode": "observe",
+  "chainId": 97,
+  "market": "USDT",
+  "account": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "preState": {
+    "blockNumber": "129707124",
+    "blockHash": "0x5b5916e4ff3d89c890be51f6baf47dd7a756b05a9942c1d0ae57e955ca10a531",
+    "weightedCollateralUsd": "8377399774972241029",
+    "totalBorrowUsd": "3343647904264645996",
+    "healthFactor": "2.505467",
+    "healthFactorMantissa": "2505467087095896325",
+    "unpricedCount": 0,
+    "protocolLiquidity": "5033751870707585163",
+    "protocolShortfall": "0"
+  },
+  "marketVerification": {
+    "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+    "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+    "underlyingDecimals": 6,
+    "implementation": "0x73ff75092da265b87b25ffb943c47c90419a04a6",
+    "isListed": true,
+    "mintPaused": false,
+    "supplySelector": "0xa0712d68",
+    "supplySignature": "mint(uint256)",
+    "explorerVToken": "https://testnet.bscscan.com/address/0xb7526572ffe56ab9d7489838bf2e18e3323b441a"
+  },
+  "altana": {
+    "chainId": 97,
+    "name": "BNB Smart Chain Testnet",
+    "relayUrl": "https://testnet-relay.altana.network",
+    "keyStore": "0x6b8361c29d05d498b1a12b54a37310f94171e94a",
+    "keyStoreController": "0xb530d1971f5453f3359518343f05d0aedfff7e12",
+    "accountImplementation": "0x33ad2f49ab9f122f5f0fdf579f575724eff353de",
+    "orchestrator": "0xcb5cef3c54aa90e9a7ad602a258d3d360cc862b9",
+    "accountImplementationCodeSize": 23384,
+    "feeToken": "NATIVE"
+  },
+  "venus": {
+    "chainId": 97,
+    "comptroller": "0x94d1820b2d1c7c7452a163983dc888cec546b77d",
+    "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+    "vTokenImplementation": "0x73ff75092da265b87b25ffb943c47c90419a04a6",
+    "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+    "underlyingSymbol": "USDT",
+    "underlyingDecimals": 6,
+    "oracle": "0x3cd69251d04a28d887ac14cbe2e14c52f3d57823",
+    "vaiController": "0xf70c3c6b749bbab89c081737334e74c9afd4be16",
+    "vai": "0x5ffbe5302baded40941a403228e6ad03f93752d9"
+  },
+  "outcome": "OBSERVE_OK"
+}

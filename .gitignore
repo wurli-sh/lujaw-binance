@@ -18,13 +18,9 @@ AEGIS/**
 
 node_modules/
 dist/
-.next/
 *.tsbuildinfo
 .turbo/
 coverage/
-
-# Agent local Care Plan / session public state (never commit keys)
-apps/agent/state/
 
 # Live Gate 0 evidence may contain wallet addresses; keep hashes, not secrets.
 # Commit sanitized evidence under deployments/evidence/ only after review.
