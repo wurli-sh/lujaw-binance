@@ -14,7 +14,7 @@ export function DocsSection() {
           Documentation
         </p>
         <h2 className="mx-auto mt-4 max-w-[28ch] text-[length:var(--text-h2)] leading-[var(--text-h2--line-height)] font-[number:var(--text-h2--font-weight)] tracking-[var(--text-h2--letter-spacing)]">
-          Open the Cursor demo
+          Try the MCP
         </h2>
         <div className="mt-8 flex justify-center">
           <a href={SITE.ctaUrl} target="_blank" rel="noreferrer" className="group">

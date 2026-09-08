@@ -6,7 +6,8 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "How it works", href: "#how-it-works" },
-      { label: "Open the demo", href: "#docs" },
+      { label: "Try the MCP", href: SITE.links.npmAgent, external: true },
+      { label: "Open the docs", href: SITE.links.docs, external: true },
     ],
   },
   {

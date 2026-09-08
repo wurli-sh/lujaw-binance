@@ -7,8 +7,8 @@ export const SITE = {
   description:
     "Seatbelt for Binance Agent OS. Policy, preflight, one-shot authorize, Binance confirmation, episode verify — hostile all-in dies before a trade tool runs.",
   docsUrl: REPO_URL,
-  ctaUrl: `${REPO_URL}/blob/main/docs/binance-cursor-demo.md`,
-  ctaLabel: "Open the demo",
+  ctaUrl: "https://www.npmjs.com/package/@lujaw-binance/agent",
+  ctaLabel: "Try the MCP",
   hero: {
     eyebrow: "Seatbelt for Binance Agent OS",
     headlineLead: "Trading power needs a seatbelt",
@@ -24,6 +24,8 @@ export const SITE = {
   },
   links: {
     repo: REPO_URL,
+    docs: `${REPO_URL}/tree/main/docs`,
+    npmAgent: "https://www.npmjs.com/package/@lujaw-binance/agent",
     cursorDemo: `${REPO_URL}/blob/main/docs/binance-cursor-demo.md`,
     threatModel: `${REPO_URL}/blob/main/docs/binance-threat-model.md`,
     noFundsDemo: `${REPO_URL}/blob/main/docs/binance-no-funds-demo.md`,
