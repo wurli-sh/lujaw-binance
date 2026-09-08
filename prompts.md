@@ -1,4 +1,4 @@
-# Demo prompts (Codex · Scene 1 only)
+# Demo prompts (Codex demo)
 
 Copy one block at a time. Restart Codex after `pnpm build:mcp` so `lujaw` loads the latest build.
 
@@ -9,8 +9,6 @@ Copy one block at a time. Restart Codex after `pnpm build:mcp` so `lujaw` loads 
 ```text
 /mcp
 ```
-
-Expect: `binance: connected` · `lujaw: connected (9 tools)`
 
 ---
 
@@ -59,7 +57,3 @@ List every tool you called in this thread. Confirm you did not call lujaw_order_
 ```
 
 ---
-
-## Stop
-
-Do not fund the account. Do not authorize. Do not run Gate C. Do not run `pnpm demo:no-funds` in the recording.
