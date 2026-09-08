@@ -14,10 +14,10 @@ export function DocsSection() {
           Documentation
         </p>
         <h2 className="mx-auto mt-4 max-w-[28ch] text-[length:var(--text-h2)] leading-[var(--text-h2--line-height)] font-[number:var(--text-h2--font-weight)] tracking-[var(--text-h2--letter-spacing)]">
-          Access our solution docs
+          Open the Cursor demo
         </h2>
         <div className="mt-8 flex justify-center">
-          <a href={SITE.docsUrl} target="_blank" rel="noreferrer" className="group">
+          <a href={SITE.ctaUrl} target="_blank" rel="noreferrer" className="group">
             <motion.div whileHover={buttonHover} whileTap={buttonTap}>
               <Button size="lg" variant="brand">
                 {SITE.ctaLabel}

@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { LogoWordmark } from "@/components/ui/LogoMark";
 import { SITE } from "@/lib/site";
-import { cn } from "@/lib/cn";
 
 const LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -11,22 +9,8 @@ const LINKS = [
 ] as const;
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 border-b border-border transition-colors duration-[160ms]",
-        scrolled ? "bg-background/85 backdrop-blur-md" : "bg-transparent",
-      )}
-    >
+    <header className="sticky top-0 z-40 bg-brand/5 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center justify-between gap-6 px-6">
         <a href="#top" aria-label={`${SITE.brand} — back to top`} className="rounded-sm">
           <LogoWordmark />

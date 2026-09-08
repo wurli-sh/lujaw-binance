@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { STACK_STICKY_TOP } from "@/config/layout";
 import { cn } from "@/lib/cn";
 
-const HALF_W = 200;
-const HALF_H = 90;
-const THICK = 40;
-const STEP = 122;
-const PAD_TOP = 40;
-const CX = 260;
-const CANVAS_W = 520;
+const HALF_W = 180;
+const HALF_H = 72;
+const THICK = 32;
+const STEP = 88;
+const PAD_TOP = 32;
+const CX = 240;
+const CANVAS_W = 480;
 
 interface Layer {
   id: string;
@@ -22,24 +22,45 @@ interface Layer {
 
 const LAYERS: Layer[] = [
   {
-    id: "care-plan",
-    name: "Set a Care Plan",
-    role: "Policy & limits",
-    body: "Normalize thresholds, target health, spend budget, the supported Venus USDT market, and session expiry — then require explicit acceptance before anything is granted.",
-    color: "#2F6FE3",
+    id: "policy",
+    name: "Set policy",
+    role: "lujaw_policy_create",
+    body: "Caps, reserve, budget, allowlist. Accept the exact policyHash.",
+    color: "#1E4FBF",
   },
   {
-    id: "grant",
-    name: "Grant bounded authority",
-    role: "Altana session",
-    body: "Create a short-lived Altana session limited to the verified Venus mint call and spend cap. No widened authority, no second rails.",
+    id: "observe",
+    name: "Observe Spot",
+    role: "Binance MCP read",
+    body: "Pull balances, ticker, and book for the proposed symbol.",
     color: "#255FD0",
   },
   {
+    id: "preflight",
+    name: "Preflight",
+    role: "lujaw_order_preflight",
+    body: "Deterministic ALLOW / REDUCE / BLOCK. Hostile all-in dies here.",
+    color: "#2F6FE3",
+  },
+  {
+    id: "authorize",
+    name: "Authorize",
+    role: "lujaw_order_authorize",
+    body: "One-shot hash on the exact normalized order. Does not place it.",
+    color: "#3D7DEB",
+  },
+  {
+    id: "confirm",
+    name: "Confirm & trade",
+    role: "Binance MCP write",
+    body: "Show the authorized order. Binance runs its own user confirmation.",
+    color: "#4C8CF0",
+  },
+  {
     id: "verify",
-    name: "Verify recovery",
-    role: "Execute & confirm",
-    body: "Calculate the minimum buffered top-up deterministically, execute only if policy allows, confirm the receipt, and check the new pinned Venus state.",
+    name: "Verify episode",
+    role: "lujaw_episode_verify",
+    body: "Check redacted fill + balances into a canonical episode.",
     color: "#5B8FE8",
   },
 ];
@@ -64,7 +85,7 @@ function StackVisual({ active }: { active: number }) {
     <svg
       viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
       aria-hidden="true"
-      className="block w-full max-w-[420px] overflow-visible lg:max-w-[480px]"
+      className="block w-full max-w-[380px] overflow-visible lg:max-w-[440px]"
     >
       {[...LAYERS].map((_, idx) => {
         const i = LAYERS.length - 1 - idx;
@@ -128,10 +149,10 @@ export function HowItWorks() {
             How it works
           </p>
           <h2 className="mt-4 text-[length:var(--text-h2)] leading-[var(--text-h2--line-height)] font-[number:var(--text-h2--font-weight)] tracking-[var(--text-h2--letter-spacing)]">
-            Three steps behind every rescue
+            Six steps behind every trade
           </h2>
           <p className="mx-auto mt-4 max-w-[48ch] text-[length:var(--text-body-lg)] leading-[var(--text-body-lg--line-height)] text-muted">
-            Each step has one job. Scroll to see what happens where.
+            Real host workflow. Each step has one job.
           </p>
         </header>
 
@@ -153,7 +174,7 @@ export function HowItWorks() {
           ))}
         </div>
 
-        <div className="hidden lg:grid lg:gap-x-10" style={{ gridTemplateColumns: "1fr 480px 1fr" }}>
+        <div className="hidden lg:grid lg:gap-x-10" style={{ gridTemplateColumns: "1fr 440px 1fr" }}>
           <div
             className="col-start-2 row-start-1 flex justify-center self-start"
             style={{ gridRow: `1 / span ${LAYERS.length}`, top: STACK_STICKY_TOP, position: "sticky" }}
@@ -171,7 +192,7 @@ export function HowItWorks() {
                   blockRefs.current[i] = el;
                 }}
                 style={{ gridRow: i + 1, gridColumn: onLeft ? 1 : 3 }}
-                className="flex min-h-[42vh] items-center"
+                className="flex min-h-[36vh] items-center"
               >
                 <TextBlock layer={layer} index={i} active={active === i} align={onLeft ? "right" : "left"} />
               </div>

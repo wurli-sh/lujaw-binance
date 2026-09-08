@@ -6,14 +6,16 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "How it works", href: "#how-it-works" },
-      { label: "Docs", href: "#docs" },
+      { label: "Open the demo", href: "#docs" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Skill package", href: `${SITE.docsUrl}/tree/main/skills/lujaw`, external: true },
-      { label: "Phase 2 decisions", href: `${SITE.docsUrl}/blob/main/docs/phase2-decisions.md`, external: true },
+      { label: "Repository", href: SITE.links.repo, external: true },
+      { label: "Cursor demo", href: SITE.links.cursorDemo, external: true },
+      { label: "Threat model", href: SITE.links.threatModel, external: true },
+      { label: "No-funds demo", href: SITE.links.noFundsDemo, external: true },
     ],
   },
 ];

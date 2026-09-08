@@ -1,22 +1,31 @@
+const REPO_URL =
+  process.env.NEXT_PUBLIC_DOCS_URL ?? "https://github.com/wurli-sh/lujaw-binance";
+
 export const SITE = {
   brand: "LUJAW",
-  title: "LUJAW — Give your position a safety line",
+  title: "LUJAW — Trading power needs a seatbelt",
   description:
-    "Bounded Venus collateral top-up on BSC testnet via a scoped Altana session. User-invoked rescue for one verified USDT market.",
-  docsUrl: process.env.NEXT_PUBLIC_DOCS_URL ?? "https://github.com/wurli-sh/lujaw-binance",
-  ctaUrl: process.env.NEXT_PUBLIC_CTA_URL ?? "https://github.com/wurli-sh/lujaw-binance",
-  ctaLabel: "Open docs",
+    "Seatbelt for Binance Agent OS. Policy, preflight, one-shot authorize, Binance confirmation, episode verify — hostile all-in dies before a trade tool runs.",
+  docsUrl: REPO_URL,
+  ctaUrl: `${REPO_URL}/blob/main/docs/binance-cursor-demo.md`,
+  ctaLabel: "Open the demo",
   hero: {
-    eyebrow: "On-chain rescue for Venus positions",
-    headlineLead: "Give your position a safety line",
+    eyebrow: "Seatbelt for Binance Agent OS",
+    headlineLead: "Trading power needs a seatbelt",
     headlineAccent: ".",
-    sub: "Set a Care Plan, grant a short-lived Altana session, and top up the smallest allowed USDT collateral on BSC testnet — then verify recovery on a pinned block. One market. No continuous monitoring.",
+    sub: "Set caps once. LUJAW preflights size, binds one authorized order, and verifies the fill after Binance confirms.",
   },
   footer: {
     blurb:
-      "Bounded, user-invoked rescue for one Venus lending market on BSC testnet — scoped Altana authority and verified post-state.",
+      "Seatbelt for AI Spot trades on Binance — policy, preflight, one-shot authorize, episode verify.",
     limitation:
-      "LUJAW performs bounded user-invoked rescue for one supported Venus market. It does not make DeFi risk-free, clear token allowances, or monitor positions continuously.",
-    copyright: "© 2026 LUJAW · BSC testnet demo",
+      "Does not make trading safe or profitable. Does not stop a bypass of LUJAW.",
+    copyright: "© 2026 LUJAW · Binance Spot demo",
+  },
+  links: {
+    repo: REPO_URL,
+    cursorDemo: `${REPO_URL}/blob/main/docs/binance-cursor-demo.md`,
+    threatModel: `${REPO_URL}/blob/main/docs/binance-threat-model.md`,
+    noFundsDemo: `${REPO_URL}/blob/main/docs/binance-no-funds-demo.md`,
   },
 } as const;
