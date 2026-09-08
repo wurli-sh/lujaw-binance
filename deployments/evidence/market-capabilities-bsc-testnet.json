@@ -1,0 +1,44 @@
+{
+  "version": "lujaw.market-capability-evidence/1",
+  "chainId": 97,
+  "account": "0x000000000000000000000000000000000000dead",
+  "blockNumber": "129827735",
+  "blockHash": "0x010c94ea2eb988401b5ba767d55a99f4ce150d3f8c09c33ccf87b318f23a95f0",
+  "markets": [
+    {
+      "symbol": "USDT",
+      "vToken": "0xb7526572ffe56ab9d7489838bf2e18e3323b441a",
+      "underlying": "0xa11c8d9dc9b66e209ef60f0c8d969d3cd988782c",
+      "underlyingDecimals": 6,
+      "implementation": "0x73ff75092da265b87b25ffb943c47c90419a04a6",
+      "observation": "OBSERVE_VERIFIED",
+      "supply": "AVAILABLE",
+      "execution": "EXECUTE_VERIFIED",
+      "reasons": []
+    },
+    {
+      "symbol": "USDC",
+      "vToken": "0xd5c4c2e2facbeb59d0216d0595d63fcdc6f9a1a7",
+      "underlying": "0x16227d60f7a0e586c66b005219dfc887d13c9531",
+      "underlyingDecimals": 6,
+      "implementation": "0x73ff75092da265b87b25ffb943c47c90419a04a6",
+      "observation": "OBSERVE_VERIFIED",
+      "supply": "AVAILABLE",
+      "execution": "NOT_VERIFIED",
+      "reasons": []
+    },
+    {
+      "symbol": "BUSD",
+      "vToken": "0x08e0a5575de71037ae36abfafb516595fe68e5e4",
+      "underlying": "0x8301f2213c0eed49a7e28ae4c3e91722919b8b47",
+      "underlyingDecimals": 18,
+      "implementation": "0x73ff75092da265b87b25ffb943c47c90419a04a6",
+      "observation": "OBSERVE_VERIFIED",
+      "supply": "UNAVAILABLE",
+      "execution": "NOT_VERIFIED",
+      "reasons": ["MINT_PAUSED", "ZERO_SUPPLY_CAP"]
+    }
+  ],
+  "command": "node apps/agent/dist/cli.js markets --json",
+  "note": "Observation capability, current supply availability, and execution verification are independent claims. Only USDT has passed the full low-value execution lifecycle."
+}
