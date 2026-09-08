@@ -17,11 +17,11 @@ These supersede older example wording in early product drafts that used mainnet-
 
 ## Live gate (2026-09-08)
 
-`pnpm phase2:live` passed on owner `0x658d…440B`:
+`pnpm phase2:live` passed on owner `0x658d…440B` (re-verified after Agent OS surface restore):
 
-- grant `0xe7a691b7…`
-- mint/rescue EXECUTED `0x40cfe96d…` (HF 4.319999 → 4.360200)
-- revoke `0xfdabeae3…`
+- grant `0xea4d88a3…`
+- mint/rescue EXECUTED `0x7d4663eb…` (HF 4.360200 → 4.410249)
+- revoke `0xe3304674…`
 
 ## Env placeholders
 
