@@ -1,6 +1,6 @@
-<img src="docs/assets/banner.png" width="100%" alt="LUJAW — Trading power needs a seatbelt" />
+<img src="demo/assets/banner.png" width="100%" alt="LUJAW — Trading power needs a seatbelt" />
 
-[Landing](https://lujaw.vercel.app) · [Demo script](docs/binance-cursor-demo.md) · [Demo prompts](prompts.md)
+[Landing](https://lujaw.vercel.app) · [Demo video](https://youtu.be/vcTYoqwRHRI) · [Demo script](docs/binance-cursor-demo.md) · [Demo prompts](prompts.md)
 
 ## Problem
 
@@ -45,7 +45,7 @@ Runbook: [`docs/binance-no-funds-demo.md`](docs/binance-no-funds-demo.md).
 | Resource | Value |
 | -------- | ----- |
 | Landing / marketing | [https://lujaw.vercel.app](https://lujaw.vercel.app) |
-| Demo video | TBD |
+| Demo video | [https://youtu.be/vcTYoqwRHRI](https://youtu.be/vcTYoqwRHRI) |
 | Demo prompts | [`prompts.md`](prompts.md) |
 | npm MCP (`lujaw-mcp`) | [`@lujaw-binance/agent`](https://www.npmjs.com/package/@lujaw-binance/agent) |
 | npm core engine | [`@lujaw-binance/core`](https://www.npmjs.com/package/@lujaw-binance/core) |
