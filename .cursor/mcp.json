@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "lujaw": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/apps/agent/dist/mcp.js"],
+      "envFile": "${workspaceFolder}/.env"
+    },
+    "binance-mcp-server": {
+      "url": "https://agent.binance.com/mcp/agentic"
+    }
+  }
+}

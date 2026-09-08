@@ -1,5 +1,42 @@
 # Operations
 
+## Binance Spot (primary MCP)
+
+### lujaw_policy_create
+
+Draft (`accept=false`) or activate (`accept=true` + exact `policyHash`) a
+`lujaw.binance-spot-policy/1` policy. Demo preset ceilings are disposable
+hackathon limits (e.g. 25 USDT per order). State: `.lujaw/binance/`.
+
+### lujaw_order_preflight
+
+Host supplies intent + observation (normalized or fixture-shaped). Returns
+`ALLOW` | `REDUCE` | `BLOCK` | `INCONCLUSIVE` with `preflightHash`. REDUCE
+exposes the only compliant size — do not interpolate.
+
+### lujaw_order_authorize
+
+Consumes an unexpired ALLOW/REDUCE preflight after exact hash acceptance.
+Reserves daily notional. Does **not** submit to Binance.
+
+### lujaw_episode_verify
+
+Builds `lujaw.binance-spot-episode/1` from authorization + redacted host
+evidence. Partial/rejected/ambiguous never become full `VERIFIED` success.
+`hostAttested` is always false in v1.
+
+---
+
+## Venus (secondary)
+
+## markets
+
+Read configured Venus supply markets at one pinned block and report three
+independent capabilities: observation verification, current supply availability,
+and execution verification. It never spends and may use a public probe account
+when no account is supplied. `OBSERVE_VERIFIED` or `AVAILABLE` must never be
+described as `EXECUTE_VERIFIED`.
+
 ## check
 
 Read-only Venus observe + reconstruct. Writes `lujaw.episode/1`.

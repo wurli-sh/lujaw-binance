@@ -1,0 +1,104 @@
+{
+  "version": "lujaw.binance-spot-demo-evidence/1",
+  "status": "fixture-verified",
+  "note": "Generated from synthetic fixtures. Replace with redacted live Gate C episode after discovery + funded Agentic sub-account trade.",
+  "gateA": "fixture normalize + preflight",
+  "gateB": "hostile 1000 USDT request → REDUCE",
+  "gateC": "pending live Binance MCP confirmation",
+  "decision": "REDUCE",
+  "authorizedNotional": "25",
+  "bindingReasons": [
+    "MAX_ORDER_NOTIONAL_BINDING",
+    "DAILY_BUDGET_BINDING",
+    "MIN_RESERVE_BINDING",
+    "CONCENTRATION_BINDING",
+    "SLIPPAGE_BINDING"
+  ],
+  "episode": {
+    "version": "lujaw.binance-spot-episode/1",
+    "episodeId": "0xed5affe24b8f99ad2cd9ad336c7b2ed4f0060797f632cb22089b4b02959b3c8a",
+    "createdAt": 1788883936,
+    "policyHash": "0x7330a7d01aae770dd220576f9dd20bbde778af47613efa624f1fff5f72bc1621",
+    "observationHash": "0x868430d8f85749b2f98186826d738c371409e18ba1409c3f6331368cb7946a68",
+    "preflightHash": "0xb4efd3e89b0ed3104632d2ffcab9017f8431251268bfda20b2d7762bbe154b9c",
+    "authorizationHash": "0x22619ef9a2a76eb9268d46bff59dac39b281d970eca006492742cdd212ca42b1",
+    "requestedOrder": {
+      "version": "lujaw.binance-spot-intent/1",
+      "symbol": "BNBUSDT",
+      "side": "BUY",
+      "type": "MARKET",
+      "quoteOrderQty": "1000",
+      "requestedAt": 1788883936
+    },
+    "authorizedOrder": {
+      "version": "lujaw.binance-spot-intent/1",
+      "symbol": "BNBUSDT",
+      "side": "BUY",
+      "type": "MARKET",
+      "quoteOrderQty": "25",
+      "requestedAt": 1788883936
+    },
+    "decision": "REDUCE",
+    "reasons": [
+      "MAX_ORDER_NOTIONAL_BINDING",
+      "DAILY_BUDGET_BINDING",
+      "MIN_RESERVE_BINDING",
+      "CONCENTRATION_BINDING",
+      "SLIPPAGE_BINDING",
+      "VERIFIED_COMPLIANT"
+    ],
+    "exactHashAccepted": true,
+    "evidence": {
+      "orderId": "fixture-demo",
+      "clientOrderId": "lujaw-fixture",
+      "status": "FILLED",
+      "executedQty": "0.01",
+      "cumulativeQuoteQty": "25",
+      "fills": [
+        {
+          "price": "600.1",
+          "qty": "0.01",
+          "commission": "0.00001",
+          "commissionAsset": "BNB"
+        }
+      ],
+      "preBalances": [
+        {
+          "asset": "USDT",
+          "free": "100.00000000",
+          "locked": "0.00000000"
+        },
+        {
+          "asset": "BNB",
+          "free": "0.05000000",
+          "locked": "0.00000000"
+        }
+      ],
+      "postBalances": [
+        {
+          "asset": "USDT",
+          "free": "75",
+          "locked": "0"
+        },
+        {
+          "asset": "BNB",
+          "free": "0.06",
+          "locked": "0"
+        }
+      ],
+      "hostAttested": false
+    },
+    "compliance": {
+      "policyHashBound": true,
+      "preflightHashBound": true,
+      "authorizationOneShot": true,
+      "orderMatch": true,
+      "fullFill": true
+    },
+    "outcome": "VERIFIED",
+    "limitations": [
+      "Host-supplied Binance evidence is not cryptographically attested by LUJAW.",
+      "Host can bypass LUJAW and call Binance MCP directly."
+    ]
+  }
+}

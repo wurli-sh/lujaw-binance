@@ -1,0 +1,21 @@
+---
+description: LUJAW Binance Spot safety orchestration — workflow guidance, not a security boundary
+globs:
+alwaysApply: true
+---
+
+# LUJAW Binance Spot safety (host workflow)
+
+When both LUJAW MCP and Binance MCP are connected:
+
+1. Never call a Binance trading/order tool before a successful `lujaw_order_authorize`.
+2. Never change symbol, side, type, price, or amount after authorization — use the exact `authorizedOrder`.
+3. Show the exact authorized order to the user before calling Binance MCP.
+4. Let Binance MCP perform its required user confirmation.
+5. After execution, query final order status and updated Spot balances.
+6. Pass the complete redacted result to `lujaw_episode_verify`.
+7. State clearly when evidence is missing, partial, or inconclusive.
+
+This rule is **workflow guidance only**. The host can still bypass LUJAW and call Binance MCP directly. LUJAW does not store Binance OAuth tokens and does not cryptographically attest host-supplied Binance evidence in v1.
+
+Prefer LUJAW Binance tools (`lujaw_policy_create`, `lujaw_order_preflight`, `lujaw_order_authorize`, `lujaw_episode_verify`) for Spot demos. Venus tools are a secondary DeFi adapter.
