@@ -4,6 +4,7 @@ research/**
 lujaw.md
 lujaw-v1.md
 lujaw-impl-plan.md
+binance-cex-impl.md
 
 .superstack/
 *.superstack/
@@ -21,6 +22,8 @@ coverage/
 
 # Agent runtime state (episodes / active session metadata)
 apps/agent/state/
+.lujaw/
+*.tgz
 
 # Live Gate 0 evidence may contain wallet addresses; keep hashes, not secrets.
 # Commit sanitized evidence under deployments/evidence/ only after review.
