@@ -1,6 +1,6 @@
 <img src="demo/assets/banner.png" width="100%" alt="LUJAW — Trading power needs a seatbelt" />
 
-[Landing](https://lujaw.vercel.app) · [Demo video](https://youtu.be/vcTYoqwRHRI) · [Demo script](docs/binance-cursor-demo.md) · [Demo prompts](prompts.md)
+[Landing](https://lujaw.vercel.app) · [Demo video](https://youtu.be/vcTYoqwRHRI)
 
 ## Problem
 

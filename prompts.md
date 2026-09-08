@@ -1,7 +1,4 @@
 # Demo prompts (Codex demo)
-
-Copy one block at a time. Restart Codex after `pnpm build:mcp` so `lujaw` loads the latest build.
-
 ---
 
 ## 0. Check MCPs
