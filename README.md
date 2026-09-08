@@ -38,6 +38,15 @@ pnpm build:mcp
 
 Standard tests use redacted/synthetic fixtures only — no Binance auth, no spend.
 
+For the final no-funds judge demo:
+
+```bash
+pnpm demo:no-funds
+```
+
+It proves the simulated positive preflight only; the paired real empty-account
+refusal is demonstrated through the connected Binance and LUJAW MCPs.
+
 ## Cursor demo (Binance + LUJAW)
 
 1. `pnpm build:mcp` and enable local `lujaw` from [`.cursor/mcp.json`](.cursor/mcp.json).

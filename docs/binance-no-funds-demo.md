@@ -26,7 +26,7 @@ That is live, read-only evidence. Do not work around the block and do not call
 Run the repository’s deterministic simulated-account test:
 
 ```bash
-pnpm --filter @lujaw/agent test -- conformance.test.ts
+pnpm demo:no-funds
 ```
 
 The named test `allows a clearly simulated 10 USDT buy while preserving the 5
