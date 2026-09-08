@@ -1,10 +1,28 @@
 {
   "name": "@lujaw/core",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": ["binance", "spot", "mcp", "policy", "venus", "defi", "risk"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wurli-sh/lujaw-binance.git",
+    "directory": "packages/core"
+  },
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

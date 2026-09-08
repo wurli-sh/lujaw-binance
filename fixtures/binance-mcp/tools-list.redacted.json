@@ -1,0 +1,84 @@
+{
+  "_meta": {
+    "status": "synthetic-provisional",
+    "note": "Replace with sanitized live tools/list from official Binance Agent OS MCP. Names below are placeholders aligned to common Spot MCP surfaces and must not be treated as attested official names until discovery.",
+    "capturedAt": null
+  },
+  "tools": [
+    {
+      "name": "binance_spot_exchange_info",
+      "description": "Spot exchange filters and symbol metadata",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "symbol": { "type": "string" } },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "binance_spot_ticker",
+      "description": "Spot ticker price",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "symbol": { "type": "string" } },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "binance_spot_depth",
+      "description": "Spot order book depth",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "limit": { "type": "number" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "binance_spot_account",
+      "description": "Agentic Spot balances",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "binance_spot_place_order",
+      "description": "Place Spot order; requires user confirmation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "side": { "type": "string", "enum": ["BUY", "SELL"] },
+          "type": { "type": "string", "enum": ["MARKET", "LIMIT"] },
+          "quantity": { "type": "string" },
+          "quoteOrderQty": { "type": "string" },
+          "price": { "type": "string" },
+          "timeInForce": { "type": "string" },
+          "newClientOrderId": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "binance_spot_get_order",
+      "description": "Query Spot order status",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string" },
+          "orderId": { "type": "number" },
+          "origClientOrderId": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "discoveryDecisions": {
+    "quoteOrderQtySupported": true,
+    "clientOrderIdSupported": true,
+    "freshnessFields": ["serverTime", "transactTime", "updateTime"]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "BNBUSDT",
+  "orderId": 900001,
+  "clientOrderId": "lujaw-demo-001",
+  "transactTime": 1700000005000,
+  "price": "0.00000000",
+  "origQty": "0.01600000",
+  "executedQty": "0.01600000",
+  "cummulativeQuoteQty": "9.60160000",
+  "status": "FILLED",
+  "type": "MARKET",
+  "side": "BUY",
+  "fills": [
+    {
+      "price": "600.10000000",
+      "qty": "0.01600000",
+      "commission": "0.00001600",
+      "commissionAsset": "BNB"
+    }
+  ]
+}

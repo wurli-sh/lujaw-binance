@@ -1,0 +1,46 @@
+/**
+ * Stable machine-readable reason codes for Binance Spot policy engine.
+ * These are API surface — tests lock the set against accidental renames.
+ */
+export const BINANCE_REASON_CODES = [
+  "POLICY_MISSING",
+  "POLICY_EXPIRED",
+  "ACCOUNT_MISMATCH",
+  "PRODUCT_NOT_ALLOWED",
+  "SYMBOL_NOT_ALLOWED",
+  "SIDE_NOT_ALLOWED",
+  "ORDER_TYPE_NOT_ALLOWED",
+  "SYMBOL_NOT_TRADING",
+  "OBSERVATION_STALE",
+  "OBSERVATION_INCOMPLETE",
+  "VALUATION_COVERAGE_LOW",
+  "INVALID_DECIMAL",
+  "FILTER_VIOLATION",
+  "INSUFFICIENT_BALANCE",
+  "MIN_RESERVE_BINDING",
+  "MAX_ORDER_NOTIONAL_BINDING",
+  "DAILY_BUDGET_BINDING",
+  "CONCENTRATION_BINDING",
+  "SLIPPAGE_BINDING",
+  "INSUFFICIENT_BOOK_DEPTH",
+  "BELOW_MIN_NOTIONAL",
+  "PREFLIGHT_EXPIRED",
+  "PREFLIGHT_HASH_MISMATCH",
+  "AUTHORIZATION_REPLAY",
+  "ORDER_MISMATCH",
+  "ORDER_REJECTED",
+  "ORDER_PARTIALLY_FILLED",
+  "ORDER_STATUS_UNCONFIRMED",
+  "POST_BALANCE_MISMATCH",
+  "FEE_ASSET_UNEXPECTED",
+  "VERIFIED_COMPLIANT",
+  "SIZING_MODE_INVALID",
+  "QUOTE_ASSET_NOT_ALLOWED",
+  "HARD_BOUND_VIOLATION",
+] as const;
+
+export type BinanceReasonCode = (typeof BINANCE_REASON_CODES)[number];
+
+export function isBinanceReasonCode(value: string): value is BinanceReasonCode {
+  return (BINANCE_REASON_CODES as readonly string[]).includes(value);
+}

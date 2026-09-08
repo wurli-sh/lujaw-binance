@@ -1,0 +1,8 @@
+{
+  "accountRef": "agentic-subaccount-redacted",
+  "balances": [
+    { "asset": "USDT", "free": "100.00000000", "locked": "0.00000000" },
+    { "asset": "BNB", "free": "0.05000000", "locked": "0.00000000" }
+  ],
+  "openOrders": []
+}

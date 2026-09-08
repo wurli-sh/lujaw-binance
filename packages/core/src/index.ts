@@ -7,6 +7,7 @@ export * from "./venus/errors.js";
 export * from "./venus/observation.js";
 export * from "./venus/reads.js";
 export * from "./venus/supply.js";
+export * from "./venus/market-verification.js";
 export * from "./venus/mint.js";
 
 export * from "./health/scale.js";
@@ -33,3 +34,14 @@ export * from "./draft/agentrouter.js";
 export * from "./episode/canonical.js";
 export * from "./episode/build.js";
 export * from "./orchestration.js";
+
+export * from "./binance/decimal.js";
+export * from "./binance/reason-codes.js";
+export * from "./binance/schemas.js";
+export * from "./binance/filters.js";
+export * from "./binance/orderbook.js";
+export * from "./binance/valuation.js";
+export * from "./binance/policy.js";
+export * from "./binance/preflight.js";
+export * from "./binance/authorization.js";
+export * from "./binance/episode.js";

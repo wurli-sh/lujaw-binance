@@ -1,0 +1,9 @@
+{
+  "symbol": "BNBUSDT",
+  "side": "BUY",
+  "type": "MARKET",
+  "quoteOrderQty": "9.60",
+  "status": "REJECTED",
+  "code": -2010,
+  "msg": "Account has insufficient balance for requested action."
+}
