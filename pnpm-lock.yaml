@@ -11,7 +11,7 @@ importers:
       '@altananetwork/sdk':
         specifier: 0.7.1
         version: 0.7.1(@types/react@19.0.7)(@wagmi/core@3.6.5(@types/react@19.0.7)(react@19.2.3)(typescript@5.8.2)(viem@2.55.17(typescript@5.8.2)(zod@4.5.4)))(react@19.2.3)(typescript@5.8.2)(zod@4.5.4)
-      '@lujaw/core':
+      '@lujaw-binance/core':
         specifier: workspace:*
         version: link:packages/core
       viem:
@@ -33,7 +33,7 @@ importers:
 
   apps/agent:
     dependencies:
-      '@lujaw/core':
+      '@lujaw-binance/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@modelcontextprotocol/sdk':

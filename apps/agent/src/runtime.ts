@@ -18,7 +18,7 @@ import {
   type ActiveState,
   type DeploymentProfile,
   type DraftCarePlanInput,
-} from "@lujaw/core";
+} from "@lujaw-binance/core";
 import { createPublicClient, http, type Address, type Hex, type PublicClient } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { bscTestnet } from "viem/chains";

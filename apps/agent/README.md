@@ -1,4 +1,4 @@
-# @lujaw/agent
+# @lujaw-binance/agent
 
 CLI and MCP server for LUJAW.
 
@@ -9,8 +9,8 @@ CLI and MCP server for LUJAW.
 `rescue`, `revoke`).
 
 ```bash
-npx -y --package @lujaw/agent lujaw-mcp
-npx -y --package @lujaw/agent lujaw markets
+npx -y --package @lujaw-binance/agent lujaw-mcp
+npx -y --package @lujaw-binance/agent lujaw markets
 ```
 
 See the main [LUJAW repository](https://github.com/wurli-sh/lujaw-binance) for

@@ -5,7 +5,7 @@
 import {
   attachObservationHash,
   type BinanceSpotObservation,
-} from "@lujaw/core";
+} from "@lujaw-binance/core";
 import { z } from "zod";
 
 const rawBalanceSchema = z.object({

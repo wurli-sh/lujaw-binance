@@ -10,7 +10,7 @@ import {
   verifySpotEpisode,
   type BinanceExecutionEvidence,
   type BinanceSpotOrderIntent,
-} from "@lujaw/core";
+} from "@lujaw-binance/core";
 import type { Hex } from "viem";
 import { DEMO_SPOT_CEILINGS } from "./demo-preset.js";
 import { coerceObservation } from "./normalize.js";

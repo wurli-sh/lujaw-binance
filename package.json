@@ -6,11 +6,12 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "build": "pnpm -r run build",
-    "build:mcp": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent build",
+    "build:mcp": "pnpm --filter @lujaw-binance/core build && pnpm --filter @lujaw-binance/agent build",
     "typecheck": "pnpm -r run typecheck",
-    "test": "pnpm --filter @lujaw/core test && pnpm --filter @lujaw/agent test",
-    "lujaw": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent lujaw",
-    "mcp": "pnpm --filter @lujaw/core build && pnpm --filter @lujaw/agent mcp",
+    "test": "pnpm --filter @lujaw-binance/core test && pnpm --filter @lujaw-binance/agent test",
+    "demo:no-funds": "pnpm --filter @lujaw-binance/agent test -- conformance.test.ts -t \"allows a clearly simulated\"",
+    "lujaw": "pnpm --filter @lujaw-binance/core build && pnpm --filter @lujaw-binance/agent lujaw",
+    "mcp": "pnpm --filter @lujaw-binance/core build && pnpm --filter @lujaw-binance/agent mcp",
     "phase2:live": "tsx --env-file=.env scripts/phase2-live.ts",
     "gate0": "tsx scripts/gate0.ts",
     "gate0:observe": "GATE0_MODE=observe tsx scripts/gate0.ts",
@@ -19,7 +20,7 @@
   },
   "dependencies": {
     "@altananetwork/sdk": "0.7.1",
-    "@lujaw/core": "workspace:*",
+    "@lujaw-binance/core": "workspace:*",
     "viem": "2.55.17"
   },
   "devDependencies": {

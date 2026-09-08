@@ -1,9 +1,9 @@
 {
-  "name": "@lujaw/agent",
+  "name": "@lujaw-binance/agent",
   "version": "0.1.0",
   "type": "module",
   "license": "Apache-2.0",
-  "description": "LUJAW CLI, MCP server, and runtime over @lujaw/core",
+  "description": "LUJAW CLI, MCP server, and runtime over @lujaw-binance/core",
   "engines": {
     "node": ">=20.12"
   },
@@ -33,14 +33,14 @@
     "build": "tsc -p tsconfig.json && mkdir -p dist/deployments && cp ../../deployments/bsc-testnet.json dist/deployments/bsc-testnet.json",
     "lujaw": "tsx src/cli.ts",
     "mcp": "tsx src/mcp.ts",
-    "typecheck": "pnpm --filter @lujaw/core build && tsc -p tsconfig.json --noEmit",
-    "pretest": "pnpm --filter @lujaw/core build",
+    "typecheck": "pnpm --filter @lujaw-binance/core build && tsc -p tsconfig.json --noEmit",
+    "pretest": "pnpm --filter @lujaw-binance/core build",
     "test": "vitest run",
     "prepack": "pnpm build",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@lujaw/core": "workspace:*",
+    "@lujaw-binance/core": "workspace:*",
     "@modelcontextprotocol/sdk": "1.12.1",
     "viem": "2.55.17",
     "zod": "3.25.76"

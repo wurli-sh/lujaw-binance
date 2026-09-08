@@ -1,5 +1,5 @@
 /**
- * @lujaw/core — Venus reads, health, Altana authority, Care Plans, orchestration.
+ * @lujaw-binance/core — Venus reads, health, Altana authority, Care Plans, orchestration.
  */
 export * from "./venus/abis.js";
 export * from "./venus/addresses.js";

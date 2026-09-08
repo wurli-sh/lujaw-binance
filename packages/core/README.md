@@ -1,4 +1,4 @@
-# @lujaw/core
+# @lujaw-binance/core
 
 Deterministic policy engines and evidence for [LUJAW](https://github.com/wurli-sh/lujaw-binance).
 

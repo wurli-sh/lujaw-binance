@@ -12,7 +12,7 @@ import {
   formatScaled,
   parseScaled,
   subScaled,
-} from "@lujaw/core";
+} from "@lujaw-binance/core";
 import type { Hex } from "viem";
 
 export type SpotPolicyState = {
