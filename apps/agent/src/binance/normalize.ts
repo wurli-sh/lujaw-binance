@@ -151,8 +151,19 @@ export function coerceObservation(
     (value as { version?: string }).version === "lujaw.binance-spot-observation/1"
   ) {
     const obs = value as BinanceSpotObservation;
+    // Hosts sometimes copy Binance MARKET_LOT_SIZE.stepSize "0.00000000".
+    // Canonical schema omits that (means no market step), same as normalizeSpotObservation.
+    const marketStepSize = obs.filters?.marketStepSize;
+    const filters =
+      marketStepSize && /^0(?:\.0+)?$/.test(marketStepSize)
+        ? (() => {
+            const { marketStepSize: _drop, ...rest } = obs.filters;
+            return rest;
+          })()
+        : obs.filters;
     return attachObservationHash({
       ...obs,
+      filters,
       dailyExecutedNotional: ledger?.executed ?? obs.dailyExecutedNotional,
       dailyReservedNotional: ledger?.reserved ?? obs.dailyReservedNotional,
     });

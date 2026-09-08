@@ -8,7 +8,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { activateToolArgsSchema, episodeExitCode, policyCreateToolArgsSchema } from "../src/tool-inputs.js";
 import { createRuntime } from "../src/runtime.js";
 import { handleBinanceTool } from "../src/binance/tools.js";
-import { normalizeSpotObservation } from "../src/binance/normalize.js";
+import { normalizeSpotObservation, coerceObservation } from "../src/binance/normalize.js";
 
 const savedOwner = process.env.OWNER_PRIVATE_KEY;
 const savedAccount = process.env.LUJAW_ACCOUNT;
@@ -128,6 +128,16 @@ describe("Binance Spot MCP fixture flow", () => {
     expect(observation.filters.marketStepSize).toBeUndefined();
     expect(observation.filters.marketMinQty).toBe("0.00100000");
     expect(observation.filters.marketMaxQty).toBe("1000.00000000");
+
+    const hostCopiedZeroStep = {
+      ...observation,
+      filters: {
+        ...observation.filters,
+        marketStepSize: "0.00000000",
+      },
+    };
+    const coerced = coerceObservation(hostCopiedZeroStep);
+    expect(coerced.filters.marketStepSize).toBeUndefined();
   });
 
   it("allows a clearly simulated 10 USDT buy while preserving the 5 USDT reserve", async () => {
