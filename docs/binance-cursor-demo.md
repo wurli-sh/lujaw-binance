@@ -1,5 +1,7 @@
 # Binance Spot Cursor Demo
 
+Seatbelt demo in Cursor: policy → preflight → authorize → Binance confirm → episode verify.
+
 Two-scene, no-funds workflow for Track A (Binance Agent OS Mini Hackathon).
 
 ## Connect

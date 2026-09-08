@@ -1,5 +1,7 @@
 # No-funds demo: real refusal, simulated safe path
 
+Prove the seatbelt with no funds: simulated ALLOW path + live empty-account BLOCK.
+
 This is the intended hackathon demonstration when the Agentic Spot sub-account
 has no disposable USDT. It never places, authorizes, or simulates an exchange
 fill.

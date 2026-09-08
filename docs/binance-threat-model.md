@@ -1,5 +1,7 @@
 # Binance Spot threat model (hackathon v1)
 
+What the seatbelt covers — and what it does not (bypass, attestation, profit).
+
 ## Trust boundary
 
 ```text

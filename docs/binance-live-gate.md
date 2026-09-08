@@ -1,5 +1,7 @@
 # Binance Live Gate — Discovery Decisions
 
+Live-gate checklist before real Spot spend.
+
 Status: authenticated read-only discovery completed on 2026-09-08. Synthetic
 fixtures remain the deterministic test corpus; a live order remains out of
 scope unless an intentionally funded Agentic Spot account is available.

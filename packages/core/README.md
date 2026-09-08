@@ -1,6 +1,7 @@
 # @lujaw-binance/core
 
-Deterministic policy engines and evidence for [LUJAW](https://github.com/wurli-sh/lujaw-binance).
+Deterministic policy engines behind the seatbelt for
+[LUJAW](https://github.com/wurli-sh/lujaw-binance). Spot primary; Venus secondary.
 
 ## Binance Spot (primary)
 

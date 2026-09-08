@@ -1,15 +1,14 @@
 # LUJAW
 
-**Binance Agent OS gives agents financial capabilities. LUJAW makes Binance Spot
-actions bounded, explainable, and independently verifiable.**
+**LUJAW is the seatbelt for AI Spot trades: durable policy, deterministic size,
+exact-hash auth, episode verify.**
 
-LUJAW is a safety and verification layer for AI-initiated Spot trades on a
-Binance Agentic sub-account. It drafts a durable portfolio policy, deterministically
-preflights proposed orders (ALLOW / REDUCE / BLOCK), binds an exact one-shot
-authorization hash, and verifies host-mediated fills into a canonical episode.
+Binance Agent OS gives agents financial capabilities. LUJAW bounds Spot orders
+before they hit Binance — then verifies what actually filled.
 
-Venus Care Plan rescue on BSC testnet remains a **secondary** adapter that
-reuses the same deterministic policy/evidence model for on-chain DeFi.
+Does not make trading safe or profitable. Does not stop a bypass of LUJAW.
+
+Venus Care Plan on BSC testnet remains a **secondary** DeFi adapter.
 
 ## Primary surface (Binance Spot)
 
@@ -93,15 +92,13 @@ The host can bypass LUJAW and call Binance MCP directly — see
 Venus CLI flows still work (`pnpm lujaw …`). State prefers `.lujaw/venus/` with
 legacy `.lujaw/` fallback. Binance Spot state lives under `.lujaw/binance/`.
 
-## Evidence and docs
+## Docs
 
-- Live gate / discovery decisions: [`docs/binance-live-gate.md`](docs/binance-live-gate.md)
-- Demo script: [`docs/binance-cursor-demo.md`](docs/binance-cursor-demo.md)
-- No-funds judge demo: [`docs/binance-no-funds-demo.md`](docs/binance-no-funds-demo.md)
+- Cursor demo: [`docs/binance-cursor-demo.md`](docs/binance-cursor-demo.md)
+- No-funds demo: [`docs/binance-no-funds-demo.md`](docs/binance-no-funds-demo.md)
 - Threat model: [`docs/binance-threat-model.md`](docs/binance-threat-model.md)
-- Synthetic MCP fixtures: [`fixtures/binance-mcp/`](fixtures/binance-mcp/)
-- Fixture episode evidence: [`deployments/evidence/binance-spot-demo.redacted.json`](deployments/evidence/binance-spot-demo.redacted.json)
-- Venus Gate 0 evidence remains under [`deployments/evidence/`](deployments/evidence/)
+- Live gate: [`docs/binance-live-gate.md`](docs/binance-live-gate.md)
+- Spot fixtures: [`fixtures/binance-mcp/`](fixtures/binance-mcp/)
 
 ```bash
 pnpm test

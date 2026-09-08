@@ -1,6 +1,6 @@
 # @lujaw-binance/agent
 
-CLI and MCP server for LUJAW.
+CLI and MCP server that exposes the LUJAW seatbelt tools to Cursor.
 
 **Primary:** Binance Spot safety tools (`lujaw_policy_create`,
 `lujaw_order_preflight`, `lujaw_order_authorize`, `lujaw_episode_verify`).
