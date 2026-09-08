@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+@theme {
+  /* Chinari palette — 1:1 */
+  --color-brand: #2f6fe3;
+  --color-brand-dark: #255fd0;
+  --color-brand-soft: #e8f0fd;
+  --color-brand-foreground: #ffffff;
+  --color-brand-sky: #2f6fe3;
+  --color-primary: #141414;
+  --color-primary-foreground: #ffffff;
+  --color-primary-soft: #e8f0fd;
+  --color-primary-dark: #0a0a0a;
+
+  --color-charcoal: #181818;
+  --color-charcoal-soft: #262626;
+  --color-charcoal-panel: #111111;
+  --color-charcoal-panel-soft: #1a1a1a;
+  --color-inverse-foreground: #f5f5f5;
+  --color-inverse-muted: #a3a3a3;
+  --color-inverse-border: #333333;
+  --color-background: #f5f5f5;
+  --color-foreground: #171717;
+  --color-card: #fafafa;
+  --color-card-foreground: #171717;
+  --color-border: #d4d4d4;
+  --color-border-strong: #a3a3a3;
+  --color-muted: #f0f0f0;
+  --color-muted-foreground: #525252;
+  --color-skeleton: #e4e4e0;
+  --color-skeleton-shine: #f0f0ee;
+  --color-skeleton-dark: #2c2c2a;
+  --color-skeleton-dark-shine: #3a3a38;
+  --color-destructive: #c63b33;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #0f8a6a;
+  --color-success-soft: #d2f2e6;
+  --color-warning: #b66e1a;
+  --color-error-soft: #fce3df;
+  --color-ring: #2f6fe3;
+  --radius: 0;
+
+  /* AEGIS section semantic bridges (Chinari hex) */
+  --color-brand-strong: #255fd0;
+  --color-surface: #e8f0fd;
+  --color-subtle: #737373;
+
+  --font-sans: var(--font-space-grotesk), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* AEGIS type scale for How it works / Footer */
+  --text-h2: 30px;
+  --text-h2--line-height: 38px;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 22px;
+  --text-h3--line-height: 30px;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 600;
+
+  --text-h4: 18px;
+  --text-h4--line-height: 26px;
+  --text-h4--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 30px;
+
+  --text-body: 16px;
+  --text-body--line-height: 26px;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 22px;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+
+  --text-overline: 12px;
+  --text-overline--line-height: 16px;
+  --text-overline--letter-spacing: 0.08em;
+  --text-overline--font-weight: 600;
+
+  --text-mono-sm: 12px;
+  --text-mono-sm--line-height: 18px;
+
+  --shadow-soft:
+    inset 0 1px 0 oklch(1 0 0 / 0.9), inset 0 -1px 0 oklch(0 0 0 / 0.04),
+    inset 0 0 0 1px oklch(0 0 0 / 0.03), 0 1px 2px oklch(0 0 0 / 0.05);
+
+  --shadow-card:
+    inset 0 1px 0 oklch(1 0 0 / 0.95), inset 0 -1px 0 oklch(0 0 0 / 0.06),
+    inset 0 0 0 1px oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.06),
+    0 4px 8px oklch(0 0 0 / 0.04);
+
+  --shadow-elev:
+    inset 0 1px 0 oklch(1 0 0 / 0.12), inset 0 -1px 0 oklch(0 0 0 / 0.2),
+    inset 0 0 0 1px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.15),
+    0 6px 14px oklch(0 0 0 / 0.12), 0 18px 40px oklch(0 0 0 / 0.18);
+
+  --shadow-pill:
+    inset 0 1px 0 oklch(1 0 0 / 0.2), inset 0 -1px 0 oklch(0 0 0 / 0.15),
+    inset 0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 1px oklch(0 0 0 / 0.1),
+    0 2px 4px oklch(0 0 0 / 0.08);
+
+  --shadow-blue-pill:
+    inset 0 1px 0 oklch(1 0 0 / 0.35), inset 0 -1px 0 oklch(0 0 0 / 0.12),
+    inset 0 0 0 1px oklch(0 0 0 / 0.06), 0 1px 2px oklch(0 0 0 / 0.08),
+    0 0 14px oklch(0.58 0.18 258 / 0.28);
+
+  --shadow-glow: 0 0 0 3px oklch(0.58 0.18 258 / 0.32);
+
+  --z-index-front: 40;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-border);
+    border-radius: 0 !important;
+    font-family: inherit;
+  }
+
+  html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    margin: 0;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  pre,
+  code {
+    font-family: var(--font-sans);
+  }
+}
+
+.pill-gradient {
+  background-image: linear-gradient(
+    to bottom,
+    oklch(1 0 0 / 0.15) 0%,
+    oklch(1 0 0 / 0) 45%,
+    oklch(0 0 0 / 0.08) 100%
+  );
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-elev {
+    box-shadow: var(--shadow-elev);
+  }
+  .shadow-pill {
+    box-shadow: var(--shadow-pill);
+  }
+  .shadow-blue-pill {
+    box-shadow: var(--shadow-blue-pill);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* AEGIS text-muted → Chinari muted-foreground (bg-muted stays surface) */
+  .text-muted {
+    color: var(--color-muted-foreground);
+  }
+}
